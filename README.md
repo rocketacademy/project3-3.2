@@ -1,6 +1,6 @@
-# Rocket Academy Coding Bootcamp: Project 2 - Firebase App
+# Rocket Academy Coding Bootcamp: Project 3 - Full Stack Application
 
-https://bc.rocketacademy.co/2-full-stack/2.p-full-stack-app-firebase
+https://bc.rocketacademy.co/3-backend/3.p-full-stack-app-express
 
 ## Available Scripts
 
