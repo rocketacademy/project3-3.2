@@ -1,13 +1,17 @@
-import logo from "/logo.png";
 import "./App.css";
 
-function App() {
+export default function App() {
   return (
     <>
       <div>
-        <img src={logo} className="App-logo" alt="logo" />
+        <img
+          width="200"
+          height="200"
+          src="https://img.icons8.com/bubbles/200/watches-front-view--v2.png"
+          alt="watches-front-view--v2"
+        />
       </div>
-      <h1>Project 3</h1>
+      <h1>Watch Out</h1>
       <div className="card">
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -16,5 +20,3 @@ function App() {
     </>
   );
 }
-
-export default App;
