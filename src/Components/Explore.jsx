@@ -1,3 +1,4 @@
+import Navbar from "./UiComponents/Navbar";
 export default function Explore(){
 	
 	return (

@@ -1,6 +1,7 @@
-export default function Profile(){
-	
-	return (
+import Navbar from "./UiComponents/Navbar";
+
+export default function Profile() {
+  return (
     <>
       <div className="h-screen">
         <Navbar />
