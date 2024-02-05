@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
-export default function Prototyping() {
-  const navigate = useNavigate();
-
+function SendMessageBar() {
   return (
     <form>
       <div className=" rounded-full h-12 flex flex-row bg-slate-300 mt-10 items-center">
@@ -44,3 +40,5 @@ export default function Prototyping() {
     </form>
   );
 }
+
+export default SendMessageBar;

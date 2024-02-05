@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "./UiComponents/Navbar";
-
+import ListingPreviewCard from "./UiComponents/ListingPreviewCard";
 
 export default function Home() {
-	const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <>
       <div className="h-screen relative">
@@ -15,10 +15,19 @@ export default function Home() {
           />
         </div>
         <h1 className="text-center font-bold antialiased underline">For you</h1>
-
+        {/* GET ALL LISTINGS AND MAP AND PASS PROPS INTO CARDS */}
+        <div className="w-full flex flex-wrap gap-4 justify-center mt-4">
+          <ListingPreviewCard />
+          <ListingPreviewCard />
+          <ListingPreviewCard />
+          <ListingPreviewCard />
+          <ListingPreviewCard />
+          <ListingPreviewCard />
+        </div>
+        <div className=" h-24"></div>
         <button
           onClick={() => navigate("/add-listing")}
-          className="btn w-28 btn-accent absolute bottom-16 right-5"
+          className="btn w-28 btn-accent fixed bottom-16 right-5 z-19"
         >
           {" "}
           + Sell
