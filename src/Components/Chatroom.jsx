@@ -1,5 +1,5 @@
 import SendMessageBar from "./UiComponents/SendMessageBar";
-import ChatBubbles from "./UiComponents/ChatBubble";
+import ChatBubble from "./UiComponents/ChatBubble";
 import { useNavigate } from "react-router-dom";
 export default function Chatroom(){
 	const navigate = useNavigate()
@@ -27,7 +27,8 @@ export default function Chatroom(){
           </span>
         </div>
         <hr />
-        <ChatBubbles />
+        <ChatBubble />
+ 
         <SendMessageBar />
       </div>
     </>

@@ -14,7 +14,7 @@ export default function Prototyping(props) {
 
       <div
         className={
-          "chat" + (senderId == currentUserId ? " chat-start" : " chat-end")
+          "chat" + (senderId == currentUserId ? " chat-end" : " chat-start")
         }
       >
         <div onClick={()=>`/profile/${senderId}`} className="chat-image avatar cursor-pointer">
