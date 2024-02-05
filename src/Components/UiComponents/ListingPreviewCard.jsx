@@ -7,7 +7,7 @@ export default function ListingPreviewCard() {
   return (
     <>
       <div className="w-40 flex flex-col listing-card-preview box-border border-2 border-black shadow-[4px_4px_0px_0px_#1a202c] rounded-lg">
-        <div className="h-8  flex flex-row rounded-t-lg">
+        <div className="h-8  flex flex-row rounded-t-lg items-center">
           <img
             onClick={() => navigate("/profile")}
             className="w-8 rounded-full flex-initial"
@@ -61,8 +61,8 @@ export default function ListingPreviewCard() {
             alt=""
           />
         </div>
-        <div className=" h-10 rounded-b-lg flex flex-row">
-          <p className="font-bold flex-1 text-sm  align-middle ">
+        <div className=" h-10 rounded-b-lg flex flex-row items-center">
+          <p className="font-bold flex-1 text-sm ml-1 align-middle ">
             Kuromi Hoodie
           </p>
           <div className="bg-black">
