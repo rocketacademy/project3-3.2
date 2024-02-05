@@ -61,11 +61,11 @@ export default function ListingPreviewCard() {
             alt=""
           />
         </div>
-        <div className=" h-10 rounded-b-lg flex flex-row items-center">
+        <div className="rounded-b-lg flex flex-row items-center h-full">
           <p className="font-bold flex-1 text-sm ml-1 align-middle ">
             Kuromi Hoodie
           </p>
-          <div className="bg-black">
+          <div className="bg-black h-full ">
             <p className="text-white font-bold flex-initial align-middle mx-1">
               $230
             </p>

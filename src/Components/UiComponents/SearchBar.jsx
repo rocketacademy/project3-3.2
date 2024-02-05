@@ -1,8 +1,8 @@
-export default function MessageSearch(props){
+export default function Search(props){
   let { searchType } = props
   return (
     <form>
-      <div className=" rounded-full h-12 flex flex-row bg-slate-300 mt-10 items-center">
+      <div className=" rounded-full h-12 flex flex-row bg-slate-300 mt-2 mx-2 items-center">
         <input
           className=" ml-4 border-0 h-8 flex-1 outline-none p-4 bg-slate-300 caret-white text-center font-semibold"
           type="text"

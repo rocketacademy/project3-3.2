@@ -24,10 +24,10 @@ export default function Home() {
           <ListingPreviewCard />
           <ListingPreviewCard />
         </div>
-        <div className=" h-24"></div>
+        <div className=" h-20"></div>
         <button
           onClick={() => navigate("/add-listing")}
-          className="btn w-28 btn-accent fixed bottom-16 right-5 z-19"
+          className="btn w-28 btn-accent fixed bottom-16 right-5 z-19 opacity-80 hover:opacity-100 transition ease-in"
         >
           {" "}
           + Sell
