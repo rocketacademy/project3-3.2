@@ -8,6 +8,7 @@ export default function Navbar() {
       <ul className=" fixed bottom-0 flex justify-around w-full menu menu-horizontal bg-stone-950 rounded-box">
         {/* HOME */}
         <li
+          className="cursor-pointer"
           onClick={() => {
             navigate("/");
           }}
@@ -31,6 +32,7 @@ export default function Navbar() {
         </li>
         {/* CHAT */}
         <li
+          className="cursor-pointer"
           onClick={() => {
             navigate("/chats");
           }}
@@ -54,6 +56,7 @@ export default function Navbar() {
         </li>{" "}
         {/* SEARCH */}
         <li
+          className="cursor-pointer"
           onClick={() => {
             navigate("/explore");
           }}
@@ -77,6 +80,7 @@ export default function Navbar() {
         </li>{" "}
         {/* LIKES */}
         <li
+          className="cursor-pointer"
           onClick={() => {
             navigate("/likes");
           }}
@@ -99,7 +103,7 @@ export default function Navbar() {
           </a>
         </li>{" "}
         {/* PROFILE */}
-        <li>
+        <li className="cursor-pointer">
           <a>
             <div className="dropdown dropdown-top dropdown-end">
               <div tabIndex={0}>

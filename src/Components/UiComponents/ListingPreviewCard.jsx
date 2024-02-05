@@ -10,12 +10,12 @@ export default function ListingPreviewCard() {
         <div className="h-8  flex flex-row rounded-t-lg items-center">
           <img
             onClick={() => navigate("/profile")}
-            className="w-8 rounded-full flex-initial"
+            className="w-8 rounded-full flex-initial cursor-pointer"
             src="https://pbs.twimg.com/profile_images/1009990947533348864/Smwp1Cia_400x400.jpg"
           ></img>
           <h2
             onClick={() => navigate("/profile")}
-            className="font-bold ml-2 flex-1"
+            className="font-bold ml-2 flex-1 cursor-pointer"
           >
             Reflem
           </h2>
@@ -54,7 +54,7 @@ export default function ListingPreviewCard() {
             </ul>
           </div>
         </div>
-        <div onClick={() => navigate("/listing")} className=" ">
+        <div onClick={() => navigate("/listing")} className="cursor-pointer">
           <img
             className="size-40 object-cover object-center border-black border-t-2 border-b-2"
             src="https://acrotokyo.itembox.design/product/005/000000000595/000000000595-01-l.jpg?t=20240205132947"

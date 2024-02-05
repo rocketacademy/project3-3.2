@@ -9,11 +9,11 @@ function ChatroomBlock(props) {
       <img
 
       onClick={()=> navigate(`/profile/${userId}`)}
-        className="h-12 w-12 rounded-full object-cover object-center flex-initial"
+        className="h-12 w-12 rounded-full object-cover object-center flex-initial cursor-pointer"
         src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         alt=""
       />
-      <div onClick={()=>navigate(`/chat/${chatroomId}`)} className="flex-1  h-full">
+      <div onClick={()=>navigate(`/chat/${chatroomId}`)} className="flex-1 cursor-pointer h-full">
         <div className="flex flex-col h-full ">
           <div className="h-[1px] bg-slate-400 opacity-60"></div>
           <div className=" h-1/2 flex flex-row items-center">
