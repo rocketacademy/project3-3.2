@@ -1,10 +1,10 @@
 function SendMessageBar() {
   return (
-    <form>
-      <div className=" rounded-full h-12 flex flex-row bg-slate-300 mt-10 items-center">
+    <form className="fixed right-0 left-0 bottom-0 w-full flex justify-center">
+      <div className=" rounded-full h-12 flex flex-row bg-slate-200 mt-10 items-center">
         <button type="button" className="ml-3">
           <input type="file" name="" id="file-upload" className="hidden" />
-          <label htmlFor="file-upload">
+          <label className="cursor-pointer" htmlFor="file-upload">
             {" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +21,7 @@ function SendMessageBar() {
           </label>
         </button>
         <input
-          className=" ml-4 border-0 h-8 flex-1 outline-none p-4 bg-slate-300 caret-white text-left font-semibold"
+          className=" ml-4 border-0 h-8 flex-1 outline-none p-4 bg-slate-200 caret-white text-left font-semibold"
           type="text"
           placeholder="Send message"
         />

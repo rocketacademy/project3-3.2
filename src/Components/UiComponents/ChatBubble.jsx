@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Prototyping(props) {
+export default function ChatBubble(props) {
   const navigate = useNavigate();
 
-	let { createdAt, content, senderUsername,} = props
-	// let { senderId, currentUserId, createdAt, content} = props
+  let { createdAt, content, senderUsername } = props;
+  // let { senderId, currentUserId, createdAt, content} = props
 
-	let senderId = 1
-	let currentUserId = 1
+  let senderId = 1;
+  let currentUserId = 1;
   return (
-    <>
+    <div className="mt-2">
       {/* MAP LIST OF MESSAGES */}
 
       <div
@@ -17,7 +17,10 @@ export default function Prototyping(props) {
           "chat" + (senderId == currentUserId ? " chat-start" : " chat-end")
         }
       >
-        <div onClick={()=>`/profile/${senderId}`} className="chat-image avatar cursor-pointer">
+        <div
+          onClick={() => `/profile/${senderId}`}
+          className="chat-image avatar cursor-pointer"
+        >
           <div className="w-10 rounded-full">
             <img
               alt="Tailwind CSS chat bubble component"
@@ -28,8 +31,10 @@ export default function Prototyping(props) {
         <div className="chat-header">
           <time className="text-xs opacity-50">{createdAt}</time>
         </div>
-        <div className="chat-bubble bg-slate-200">{content? content: "MESSAGES"}</div>
+        <div className="chat-bubble bg-slate-200">
+          {content ? content : "MESSAGES"}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
