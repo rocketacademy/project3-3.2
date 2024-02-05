@@ -1,8 +1,10 @@
 export default function Explore(){
 	
-	return(
-		<>
-
-		</>
-			);
+	return (
+    <>
+      <div className="h-screen">
+        <Navbar />
+      </div>
+    </>
+  );
 }

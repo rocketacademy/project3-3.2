@@ -1,8 +1,10 @@
 export default function Likes(){
 	
-	return(
-		<>
-
-		</>
-			);
+	return (
+    <>
+      <div className="h-screen">
+        <Navbar />
+      </div>
+    </>
+  );
 }
