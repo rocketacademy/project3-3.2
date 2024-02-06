@@ -6,8 +6,11 @@ export default function Chatroom(){
 	return (
     <>
       <div className="h-screen mx-4 mt-2">
-        <div className="h-10 w-full flex flex-row items-center">
-          <div onClick={()=> navigate(-1)} className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer">
+        <div className="h-10 w-full flex flex-row items-center fixed top-0 z-20 mt-2">
+          <div
+            onClick={() => navigate(-1)}
+            className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -26,9 +29,10 @@ export default function Chatroom(){
             @jessday
           </span>
         </div>
+        <div className="h-10"></div>
         <hr />
         <ChatBubble />
- 
+
         <SendMessageBar />
       </div>
     </>

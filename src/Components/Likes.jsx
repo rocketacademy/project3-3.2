@@ -1,4 +1,4 @@
-import ListingPreviewCard from "./UiComponents/ListingPreviewCard";
+import MediumListingPreviewCard from "./UiComponents/MediumListingPreviewCard";
 import Navbar from "./UiComponents/Navbar";
 import { useEffect } from "react";
 export default function Likes() {
@@ -30,13 +30,11 @@ export default function Likes() {
           <h2 className="font-bold">Likes</h2>
         </div>
         <hr />
-        <div className="w-full flex flex-wrap gap-4 justify-center mt-4">
-          <ListingPreviewCard />
-          <ListingPreviewCard />
-          <ListingPreviewCard />
-          <ListingPreviewCard />
-          <ListingPreviewCard />
-          <ListingPreviewCard />
+        <div className="w-full flex flex-col gap-4 justify-center mt-4">
+          <MediumListingPreviewCard />
+          <MediumListingPreviewCard />
+          <MediumListingPreviewCard />
+
         </div>
         <div className=" h-20"></div>
         <Navbar />

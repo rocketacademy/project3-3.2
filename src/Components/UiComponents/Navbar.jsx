@@ -133,9 +133,6 @@ export default function Navbar() {
                   <a onClick={() => navigate("/edit-profile")}>Edit Profile</a>
                 </li>
                 <li>
-                  <a onClick={() => navigate("#")}>Change Theme</a>
-                </li>
-                <li>
                   <a onClick={() => navigate("#")}>Sign Out</a>
                 </li>
               </ul>

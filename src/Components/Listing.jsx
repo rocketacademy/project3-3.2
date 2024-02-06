@@ -61,6 +61,7 @@ export default function Listing() {
             viewBox="0 0 24 24"
             fill="#83C0C1"
             className="w-10 h-10"
+            onClick={() => navigate("/chat/1")}
           >
             <path
               fillRule="evenodd"
@@ -82,7 +83,7 @@ export default function Listing() {
           <ReviewBlock />
         </div>
         <button
-          onClick={() => navigate("/chat/1")}
+          onClick={() => navigate("/checkout")}
           className="btn w-28 bg-[#6C22A6] text-white outline-none border-none fixed bottom-8 right-5 z-19 opacity-80 hover:opacity-100 transition ease-in"
         >
           {" "}

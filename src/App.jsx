@@ -10,6 +10,7 @@ import AddListing from "./Components/AddListing";
 import Listing from "./Components/Listing";
 import Likes from "./Components/Likes";
 import AddListingPreview from "./Components/AddListingPreview"
+import Checkout from "./Components/Checkout";
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -69,6 +70,10 @@ export default function App() {
 		{
 			path: "/explore",
 			element: <Explore />,
+		},
+		{
+			path: "/checkout",
+			element: <Checkout />,
 		},
 		{
 			path: "/prototyping",
