@@ -7,7 +7,7 @@ export default function Chatroom(){
     <>
       <div className="h-screen mx-4 mt-2">
         <div className="h-10 w-full flex flex-row items-center">
-          <div onClick={()=> navigate(`/chats`)} className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer">
+          <div onClick={()=> navigate(-1)} className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

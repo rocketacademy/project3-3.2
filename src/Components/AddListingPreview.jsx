@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Carousel from "./UiComponents/Carousel";
+import { useEffect } from "react";
 
 function AddListingPreview() {
     const navigate = useNavigate();
@@ -12,6 +13,10 @@ function AddListingPreview() {
       "https://i.pinimg.com/564x/d7/1c/af/d71cafc8b6c94dd3f40ae3cb84047ccc.jpg",
     ];
 
+    useEffect(()=>{
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    },[])
+
  
   return (
     <>
@@ -19,7 +24,7 @@ function AddListingPreview() {
         <header className="mx-4 mt-2 mb-4">
           <div className="h-10 w-full flex flex-row items-center">
             <div
-              onClick={() => navigate(`/add-listing`)}
+              onClick={() => navigate(-1)}
               className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer"
             >
               <svg
@@ -71,7 +76,7 @@ function AddListingPreview() {
         <h2 className="font-bold text-xl pb-2">Description</h2>
         <p className="text-sm pb-8">
           Hi! I am a digital artist and am currently taking commissions. HMU and
-          send me what you have in mind that you'd like to bring to life!{" "}
+          send me what you have in mind that you&apos;d like to bring to life!{" "}
         </p>
         <hr />
         <div className="flex flex-row items-center justify-center mt-4 mb-4">

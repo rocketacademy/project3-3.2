@@ -9,6 +9,10 @@ export default function AddListing() {
   const [selectedImage, setSelectedImage] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  },[]);
+
   // ONCE BACKEND ROUTES AND CONTROLLERS ARE FILLED, GET REQUEST TO ADD IN OPTIONS FROM CATEGORIES TABLE
   const options = [
     { value: "1", label: "Digital Art" },
@@ -47,7 +51,7 @@ export default function AddListing() {
         <header className="mx-4 mt-2 mb-4">
           <div className="h-10 w-full flex flex-row items-center">
             <div
-              onClick={() => navigate(`/`)}
+              onClick={() => navigate(-1)}
               className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer"
             >
               <svg
@@ -118,7 +122,7 @@ export default function AddListing() {
             required
           />
 
-					{/* TODO: NEED SOME INPUT VALIDATION */}
+          {/* TODO: NEED SOME INPUT VALIDATION */}
           <input
             type="text"
             placeholder="Price"
