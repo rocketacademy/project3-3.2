@@ -9,6 +9,7 @@ export default function ChatBubble(props) {
   let senderId = 1;
   let currentUserId = 1;
   chatImg=true
+  senderUsername
   return (
     <div className="mt-2">
       {/* MAP LIST OF MESSAGES */}
@@ -19,7 +20,7 @@ export default function ChatBubble(props) {
         }
       >
         <div
-          onClick={() => `/profile/${senderId}`}
+          onClick={() => navigate(`/profile/${senderId}`)}
           className="chat-image avatar cursor-pointer"
         >
           <div className="w-10 rounded-full">

@@ -4,7 +4,6 @@ export default function Prototyping() {
   const navigate = useNavigate();
 
   return (
-
     <>
       {/* <style>
         {`.test{
