@@ -127,13 +127,10 @@ export default function Navbar() {
                 className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-32"
               >
                 <li>
-                  <a onClick={() => navigate("/profile")}>Profile</a>
+                  <a onClick={() => navigate("/profile/1")}>Profile</a>
                 </li>
                 <li>
                   <a onClick={() => navigate("/edit-profile")}>Edit Profile</a>
-                </li>
-                <li>
-                  <a onClick={() => navigate("#")}>Change Theme</a>
                 </li>
                 <li>
                   <a onClick={() => navigate("#")}>Sign Out</a>

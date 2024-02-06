@@ -54,7 +54,7 @@ export default function ListingPreviewCard() {
             </ul>
           </div>
         </div>
-        <div onClick={() => navigate("/listing")} className="cursor-pointer">
+        <div onClick={() => navigate("/listing/1")} className="cursor-pointer">
           <img
             className="size-40 object-cover object-center border-black border-t-2 border-b-2"
             src="https://acrotokyo.itembox.design/product/005/000000000595/000000000595-01-l.jpg?t=20240205132947"

@@ -1,9 +1,15 @@
 import Navbar from "./UiComponents/Navbar";
 import Search from "./UiComponents/SearchBar"
 import ChatroomBlock from "./UiComponents/ChatroomBlock";
+import { useEffect } from "react";
 
 export default function Chats() {
   const searchType = "Search Messages"
+
+      useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }, []);
+
   return (
     <>
       <div className="h-screen mx-4 mt-4">

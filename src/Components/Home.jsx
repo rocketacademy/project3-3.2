@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "./UiComponents/Navbar";
 import ListingPreviewCard from "./UiComponents/ListingPreviewCard";
+import { useEffect } from "react";
 
 export default function Home() {
   const navigate = useNavigate();
+    useEffect(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }, []);
   return (
     <>
       <div className="h-screen relative">

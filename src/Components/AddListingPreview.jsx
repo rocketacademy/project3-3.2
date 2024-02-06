@@ -1,25 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import Carousel from "./UiComponents/Carousel";
-import ReviewBlock from "./UiComponents/ReviewBlock";
 import { useEffect } from "react";
 
-export default function Listing() {
-  const navigate = useNavigate();
+function AddListingPreview() {
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  },[]);
+    // JUST DUMMY DATA. ONCE BACKEND CONTROLLERS ARE SETUP, GET REQ FOR ARR OF IMAGES FROM BACKEND FOR THE LISTING
+    let imgArr = [
+      "https://i.pinimg.com/564x/17/4e/4c/174e4c8c81c915dbf7362a663fbfe294.jpg",
+      "https://i.pinimg.com/564x/73/65/9a/73659ae23acd89daefe7e55be100d598.jpg",
+      "https://i.pinimg.com/564x/d3/4c/49/d34c494a0ca5e7712516512e1b22f585.jpg",
+      "https://i.pinimg.com/564x/d7/1c/af/d71cafc8b6c94dd3f40ae3cb84047ccc.jpg",
+    ];
 
-  // JUST DUMMY DATA. ONCE BACKEND CONTROLLERS ARE SETUP, GET REQ FOR ARR OF IMAGES FROM BACKEND FOR THE LISTING
-  let imgArr = [
-    "https://i.pinimg.com/564x/17/4e/4c/174e4c8c81c915dbf7362a663fbfe294.jpg",
-    "https://i.pinimg.com/564x/73/65/9a/73659ae23acd89daefe7e55be100d598.jpg",
-    "https://i.pinimg.com/564x/d3/4c/49/d34c494a0ca5e7712516512e1b22f585.jpg",
-    "https://i.pinimg.com/564x/d7/1c/af/d71cafc8b6c94dd3f40ae3cb84047ccc.jpg",
-  ];
+    useEffect(()=>{
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    },[])
+
+ 
   return (
     <>
-      <div className="h-screen mx-4 mt-4">
+      <div className="h-screen mx-4 mt-2 ">
         <header className="mx-4 mt-2 mb-4">
           <div className="h-10 w-full flex flex-row items-center">
             <div
@@ -43,7 +44,10 @@ export default function Listing() {
           </div>
           <hr />
         </header>
-
+        <h2 className="text-xl text-center font-bold text-black/50 mb-4">
+          Preview
+        </h2>
+        <hr />
         <h2 className="font-bold leading-10 mt-4 text-2xl">
           ARTIST COMMISSION
         </h2>
@@ -61,7 +65,6 @@ export default function Listing() {
             viewBox="0 0 24 24"
             fill="#83C0C1"
             className="w-10 h-10"
-            onClick={() => navigate("/chat/1")}
           >
             <path
               fillRule="evenodd"
@@ -76,20 +79,14 @@ export default function Listing() {
           send me what you have in mind that you&apos;d like to bring to life!{" "}
         </p>
         <hr />
-        <h2 className="font-bold text-xl my-4">Reviews</h2>
-        <div className="pt-2 pb-16">
-          <ReviewBlock />
-          <ReviewBlock />
-          <ReviewBlock />
+        <div className="flex flex-row items-center justify-center mt-4 mb-4">
+          <button className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 ">
+            Post
+          </button>
         </div>
-        <button
-          onClick={() => navigate("/checkout")}
-          className="btn w-28 bg-[#6C22A6] text-white outline-none border-none fixed bottom-8 right-5 z-19 opacity-80 hover:opacity-100 transition ease-in"
-        >
-          {" "}
-          Order
-        </button>
       </div>
     </>
   );
 }
+
+export default AddListingPreview;

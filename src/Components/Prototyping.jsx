@@ -1,20 +1,35 @@
 import { useNavigate } from "react-router-dom";
-
+import { useState, useEffect } from "react";
 export default function Prototyping() {
+  const [preview, setPreview] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (selectedImage) {
+      const localUrl = URL.createObjectURL(selectedImage);
+      setPreview(localUrl);
+    }
+  }, [selectedImage]);
+
+  const handleImageChange = (e) => {
+    console.log(e.target.files[0]);
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedImage(null);
+      return;
+    }
+    setSelectedImage(e.target.files[0]);
+  };
 
   return (
     <>
-      {/* <style>
-        {`.test{
-    		background-color:red;
-    	}`}
-      </style> */}
-      <div className="h-screen mx-4 mt-2">
-        <header className="mx-4 mt-2">
+      <div className="h-screen mx-4 mt-4">
+        {" "}
+        <header className="mx-4 mt-2 mb-4">
           <div className="h-10 w-full flex flex-row items-center">
             <div
-              onClick={() => navigate(`/`)}
+              onClick={() => navigate(-1)}
               className="flex flex-row items-center mb-2 px-4 bg-[#83C0C1] h-full rounded-full  cursor-pointer"
             >
               <svg
@@ -34,19 +49,81 @@ export default function Prototyping() {
           </div>
           <hr />
         </header>
-        <div className="bg-[#83C0C1]/50 flex justify-center items-center rounded size-40">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-20 h-20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
-              clipRule="evenodd"
+        <h2 className="text-xl text-center font-bold text-black/50 mb-4">
+          Edit Profile
+        </h2>
+        <div className="w-full flex flex-row justify-center">
+          {preview == null ? (
+            <div className="h-32 w-32 rounded-full bg-slate-400"></div>
+          ) : (
+            <img
+              src={preview}
+              alt=""
+              className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
             />
-          </svg>
+          )}
+        </div>
+        <button className="btn">
+          <label htmlFor="file-upload">Upload Profile Picture</label>{" "}
+          <input
+            type="file"
+            id="file-upload"
+            className="hidden"
+            onChange={handleImageChange}
+          />
+        </button>
+        <div className="flex flex-col justify-center items-center">
+          {" "}
+          <input
+            type="text"
+            placeholder="First Name"
+            className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
+            required
+          />
+          <textarea
+            placeholder="Bio"
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            className="w-full mt-4 p-3 outline-[#83C0C1] rounded active:outline-[#83C0C1] bg-slate-300/30"
+            required
+          ></textarea>
+          <input
+            type="text"
+            placeholder="Address"
+            className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
+            required
+          />
+          <textarea
+            placeholder="Styles"
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            className="w-full mt-4 p-3 outline-[#83C0C1] rounded active:outline-[#83C0C1] bg-slate-300/30"
+            required
+          ></textarea>
+        </div>
+        <div className="flex flex-row items-center justify-center mt-4 mb-4">
+          <button
+            onClick={() => navigate("/profile/1")}
+            className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 "
+          >
+            Save and Exit
+          </button>
         </div>
       </div>
     </>

@@ -9,6 +9,8 @@ import Chatroom from "./Components/Chatroom";
 import AddListing from "./Components/AddListing";
 import Listing from "./Components/Listing";
 import Likes from "./Components/Likes";
+import AddListingPreview from "./Components/AddListingPreview"
+import Checkout from "./Components/Checkout";
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -58,12 +60,20 @@ export default function App() {
 			element: <AddListing />,
 		},
 		{
+			path: "/preview-listing",
+			element: <AddListingPreview />,
+		},
+		{
 			path: "/edit-profile",
 			element: <EditProfile />,
 		},
 		{
 			path: "/explore",
 			element: <Explore />,
+		},
+		{
+			path: "/checkout",
+			element: <Checkout />,
 		},
 		{
 			path: "/prototyping",
