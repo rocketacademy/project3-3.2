@@ -17,3 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
+
+// Keys
+export const DB_STORAGE_PFP_KEY = "profile-img/";

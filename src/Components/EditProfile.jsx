@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BACKEND_URL } from "./lib/constants";
+import { BACKEND_URL, DEFAULT_PFP } from "./lib/constants";
 import { useCurrentUserContext } from "./lib/context/currentUserContext";
+import { storage, DB_STORAGE_PFP_KEY } from "./lib/firebase";
+import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "firebase/storage";
 
 export default function EditProfile() {
   const [preview, setPreview] = useState(null);
@@ -18,7 +24,6 @@ export default function EditProfile() {
   const [addressValue, setAddressValue] = useState("");
 
   const { currentUser } = useCurrentUserContext();
-  
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -41,17 +46,31 @@ export default function EditProfile() {
     setSelectedImage(e.target.files[0]);
   };
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    setAddressValue(currentUser.address);
+    setUsernameValue(currentUser.username);
+    setBioValue(currentUser.bio);
+    setFirstNameValue(currentUser.firstName);
+    setLastNameValue(currentUser.lastName);
+    setStylesValue(currentUser.style);
+    setProfilePictureUrl(currentUser.profilePictureUrl);
+  }, []);
 
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // GET REQUEST TO SEE IF USERNAME EXISTS ALREADY. IF IT DOES, NOTIFY THE USER
 
     // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
-    const dbCreateUserData = await axios.put(`${BACKEND_URL}/users`, {
+    const dbUpdateUserData = await axios.put(`${BACKEND_URL}/users`, {
       firstName: firstNameValue,
       lastName: lastNameValue,
       username: usernameValue,
       bio: bioValue,
-      styles: stylesValue,
+      style: stylesValue,
       address: addressValue,
+      profilePicture: profilePictureUrl,
     });
   };
 
@@ -64,15 +83,16 @@ export default function EditProfile() {
         </h2>
         <div className="w-full flex flex-col items-center gap-2 justify-center">
           {/* PROFILE PICTURE PREVIEW */}
-          {preview == null ? (
-            <div className="h-32 w-32 rounded-full bg-slate-400"></div>
-          ) : (
             <img
-              src={preview}
+              src={
+                preview
+                  ? preview
+                  : DEFAULT_PFP
+              }
               alt=""
               className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
             />
-          )}
+          
 
           {/* PFP SET */}
           <button className="btn bg-[#83C0C1]/80 text-white">
@@ -94,6 +114,7 @@ export default function EditProfile() {
             onChange={(e) => {
               setFirstNameValue(e.target.value);
             }}
+            value={firstNameValue}
           />
           <input
             type="text"
@@ -102,6 +123,7 @@ export default function EditProfile() {
             onChange={(e) => {
               setLastNameValue(e.target.value);
             }}
+            value={lastNameValue}
           />
           <input
             type="text"
@@ -110,6 +132,7 @@ export default function EditProfile() {
             onChange={(e) => {
               setUsernameValue(e.target.value);
             }}
+            value={usernameValue}
           />
           <textarea
             placeholder="Bio"
@@ -121,6 +144,7 @@ export default function EditProfile() {
             onChange={(e) => {
               setBioValue(e.target.value);
             }}
+            value={bioValue}
           ></textarea>
           <input
             type="text"
@@ -129,6 +153,7 @@ export default function EditProfile() {
             onChange={(e) => {
               setAddressValue(e.target.value);
             }}
+            value={addressValue}
           />
           <textarea
             placeholder="Styles"
@@ -140,12 +165,13 @@ export default function EditProfile() {
             onChange={(e) => {
               setStylesValue(e.target.value);
             }}
+            value={stylesValue}
           ></textarea>
         </div>
         <div className="flex flex-row items-center justify-center mt-4 mb-4">
           <button
             type="submit"
-            disabled={usernameValue.length!==0? false:true}
+            disabled={usernameValue ? false : true}
             onClick={() => handleSubmit}
             className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 "
           >
