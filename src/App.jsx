@@ -1,4 +1,9 @@
+import { Auth0Provider } from "@auth0/auth0-react";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import "./App.css";
+import ProfileLogin from "./Components/ProfileLogin";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
@@ -17,6 +22,17 @@ export default function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
       </div>
+      <Auth0Provider
+        domain={import.meta.env.VITE_DOMAIN}
+        clientId={import.meta.env.VITE_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          audience: import.meta.env.VITE_AUDIENCE,
+        }}>
+        <QueryClientProvider client={queryClient}>
+          <ProfileLogin />
+        </QueryClientProvider>
+      </Auth0Provider>
     </>
   );
 }
