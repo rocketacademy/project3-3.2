@@ -19,17 +19,18 @@ export default function ProfileLogin() {
   } = useForm();
 
   const fetcher = async (url) => (await axios.get(url)).data;
-  const { data: usersData } = useQuery({
-    queryKey: ["users", `${BASE_URL}/users`],
-    queryFn: () => fetcher(`${BASE_URL}/users`),
+  const { data: userData } = useQuery({
+    queryKey: ["user", `${BASE_URL}/users/${userID}`],
+    queryFn: () => fetcher(`${BASE_URL}/users/${userID}`),
   });
   const putRequest = async (url, data) => await axios.put(url, data);
+  const postRequest = async (url, data) => await axios.post(url, data);
   const { mutate } = useMutation({
     mutationFn: (formData) =>
       putRequest(`${BASE_URL}/users/${userID}`, formData),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["users", `${BASE_URL}/users`],
+        queryKey: ["user", `${BASE_URL}/users/${userID}`],
       }),
   });
 

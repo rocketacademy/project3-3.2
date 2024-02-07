@@ -2,6 +2,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import "./App.css";
 import ProfileLogin from "./Components/ProfileLogin";
+import NavBar from "./Components/NavBar";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ export default function App() {
           <ProfileLogin />
         </QueryClientProvider>
       </Auth0Provider>
+      <NavBar />
     </>
   );
 }
