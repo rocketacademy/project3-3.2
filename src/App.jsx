@@ -12,27 +12,17 @@ import Likes from "./Components/Likes";
 import AddListingPreview from "./Components/AddListingPreview";
 import Checkout from "./Components/Checkout";
 import { CheckCurrentUser } from "./Components/lib/context/currentUserContext";
-// import { useEffect, useState } from "react";
+// import { useEffect } from "react";
 // import { useAuth0 } from "@auth0/auth0-react";
-// import axios from "axios";
-// import { BACKEND_URL } from "./Components/lib/constants";
 
 export default function App() {
-  // const [currentUser, setCurrentUser]=useState(null)
   // const { user, isAuthenticated } = useAuth0();
 
   // useEffect(() => {
-  //   if ((isAuthenticated, user)) {
-  //     axios
-  //       .post(`${BACKEND_URL}/users`, {
-  //         email: user.email,
-  //       })
-  //       .then((res) => {
-  //         console.log(res.data);
-  // 				setCurrentUser(res.data)
-  //       });
+  //   if (user && isAuthenticated) {
+  //     console.log(user.email.split("@")[0]);
   //   }
-  // }, [isAuthenticated, user]);
+  // }, [user, isAuthenticated]);
 
   const router = createBrowserRouter([
     {

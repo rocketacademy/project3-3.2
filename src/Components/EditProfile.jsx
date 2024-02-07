@@ -15,7 +15,6 @@ export default function EditProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   //PROFILE DETAILS STATES
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [firstNameValue, setFirstNameValue] = useState("");
   const [lastNameValue, setLastNameValue] = useState("");
   const [usernameValue, setUsernameValue] = useState("");
@@ -50,61 +49,86 @@ export default function EditProfile() {
 
   // POPULATE THE FIELDS WITH EXISTING DATA
   useEffect(() => {
-    setAddressValue(currentUser.address);
-    setUsernameValue(currentUser.username);
-    setBioValue(currentUser.bio);
-    setFirstNameValue(currentUser.firstName);
-    setLastNameValue(currentUser.lastName);
-    setStylesValue(currentUser.style);
-    setProfilePictureUrl(currentUser.profilePicture);
-    setPreview(currentUser.profilePicture);
-  }, []);
+    setAddressValue(currentUser?.address);
+    setUsernameValue(currentUser?.username);
+    setBioValue(currentUser?.bio);
+    setFirstNameValue(currentUser?.firstName);
+    setLastNameValue(currentUser?.lastName);
+    setStylesValue(currentUser?.style);
+    setProfilePictureUrl(currentUser?.profilePicture);
+    setPreview(currentUser?.profilePicture);
+  }, [currentUser]);
 
-  // FUNCTION TO UPLOAD TO FIREBASE
-  const firebaseUploadPfp = () => {
-    if (selectedImage) {
-      const storageRefInstance = storageRef(
-        storage,
-        DB_STORAGE_PFP_KEY + currentUser.username
-      );
-      uploadBytes(storageRefInstance, selectedImage)
-        .then(() => {
-          getDownloadURL(storageRefInstance);
-        })
-        .then((url) => {
-          setProfilePictureUrl(url);
-        });
-    }
-  };
+  useEffect(()=>{
+    console.log(preview)
+  },[preview])
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // GET REQUEST TO SEE IF USERNAME EXISTS ALREADY. IF IT DOES, NOTIFY THE USER
     // THIS REQ BELOW SHLD SEND BACK A BOOL
     try {
-      const checkUsernameAvailabity = await axios.get(
-        `${BACKEND_URL}/users/${currentUser.username}`
-      );
-      if (checkUsernameAvailabity) {
-        setUsernameNotAvailable(checkUsernameAvailabity);
+      const checkUsernameAvailabity = currentUser? await axios.get(
+        `${BACKEND_URL}/users/username/${currentUser.id}/${usernameValue}`
+      ):await axios.get(`${BACKEND_URL}/users/username/new/${usernameValue}`)
+      if (checkUsernameAvailabity.data) {
+        console.log(checkUsernameAvailabity.data);
+        setUsernameNotAvailable(checkUsernameAvailabity.data);
       } else {
-        firebaseUploadPfp();
+        setUsernameNotAvailable(checkUsernameAvailabity.data);
         // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
-        try {
-          const dbUpdateUserData = await axios.put(`${BACKEND_URL}/users`, {
-            firstName: firstNameValue,
-            lastName: lastNameValue,
-            username: usernameValue,
-            bio: bioValue,
-            style: stylesValue,
-            address: addressValue,
-            profilePicture: profilePictureUrl,
-          });
-          if(dbUpdateUserData){
-            navigate(-1)
+        if (selectedImage) {
+          try {
+            const storageRefInstance = storageRef(
+              storage,
+              DB_STORAGE_PFP_KEY + usernameValue
+            );
+            await uploadBytes(storageRefInstance, selectedImage);
+            const imageSrc = await getDownloadURL(storageRefInstance);
+            setProfilePictureUrl(imageSrc);
+            // ASK SAM ABOUT NEW USERS 
+            const dbUpdateUserData = await axios.put(
+              `${BACKEND_URL}/users/${currentUser.id}`,
+              {
+                firstName: firstNameValue,
+                lastName: lastNameValue,
+                username: usernameValue,
+                bio: bioValue,
+                style: stylesValue,
+                address: addressValue,
+                profilePicture: imageSrc,
+              }
+            );
+            console.log(dbUpdateUserData.data);
+            if (dbUpdateUserData) {
+              navigate(-1);
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
+        } else {
+          try {
+            const dbUpdateUserData = await axios.put(
+              `${BACKEND_URL}/users/${currentUser.id}`,
+              {
+                firstName: firstNameValue,
+                lastName: lastNameValue,
+                username: usernameValue,
+                bio: bioValue,
+                style: stylesValue,
+                address: addressValue,
+                profilePicture: currentUser.profilePicture
+                  ? currentUser.profilePicture
+                  : DEFAULT_PFP,
+              }
+            );
+            console.log(dbUpdateUserData.data);
+            if (dbUpdateUserData) {
+              navigate(-1);
+            }
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
     } catch (err) {
@@ -215,7 +239,7 @@ export default function EditProfile() {
           <button
             type="submit"
             disabled={usernameValue ? false : true}
-            onClick={() => handleSubmit}
+            onClick={handleSubmit}
             className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 "
           >
             Save and Exit
