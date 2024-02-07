@@ -22,6 +22,7 @@ export default function EditProfile() {
   const [bioValue, setBioValue] = useState("");
   const [stylesValue, setStylesValue] = useState("");
   const [addressValue, setAddressValue] = useState("");
+  const [usernameNotAvailable, setUsernameNotAvailable] = useState(false);
 
   const { currentUser } = useCurrentUserContext();
 
@@ -30,6 +31,7 @@ export default function EditProfile() {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
+  // PFP PREVIEW
   useEffect(() => {
     if (selectedImage) {
       const localUrl = URL.createObjectURL(selectedImage);
@@ -46,6 +48,7 @@ export default function EditProfile() {
     setSelectedImage(e.target.files[0]);
   };
 
+  // POPULATE THE FIELDS WITH EXISTING DATA
   useEffect(() => {
     setAddressValue(currentUser.address);
     setUsernameValue(currentUser.username);
@@ -53,25 +56,69 @@ export default function EditProfile() {
     setFirstNameValue(currentUser.firstName);
     setLastNameValue(currentUser.lastName);
     setStylesValue(currentUser.style);
-    setProfilePictureUrl(currentUser.profilePictureUrl);
+    setProfilePictureUrl(currentUser.profilePicture);
+    setPreview(currentUser.profilePicture);
   }, []);
 
-
+  // FUNCTION TO UPLOAD TO FIREBASE
+  const firebaseUploadPfp = () => {
+    if (selectedImage) {
+      const storageRefInstance = storageRef(
+        storage,
+        DB_STORAGE_PFP_KEY + currentUser.username
+      );
+      uploadBytes(storageRefInstance, selectedImage)
+        .then(() => {
+          getDownloadURL(storageRefInstance);
+        })
+        .then((url) => {
+          setProfilePictureUrl(url);
+        });
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // GET REQUEST TO SEE IF USERNAME EXISTS ALREADY. IF IT DOES, NOTIFY THE USER
+    // THIS REQ BELOW SHLD SEND BACK A BOOL
+    try {
+      const checkUsernameAvailabity = await axios.get(
+        `${BACKEND_URL}/users/${currentUser.username}`
+      );
+      if (checkUsernameAvailabity) {
+        setUsernameNotAvailable(checkUsernameAvailabity);
+      } else {
+        firebaseUploadPfp();
+        // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
+        try {
+          const dbUpdateUserData = await axios.put(`${BACKEND_URL}/users`, {
+            firstName: firstNameValue,
+            lastName: lastNameValue,
+            username: usernameValue,
+            bio: bioValue,
+            style: stylesValue,
+            address: addressValue,
+            profilePicture: profilePictureUrl,
+          });
+          if(dbUpdateUserData){
+            navigate(-1)
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
-    const dbUpdateUserData = await axios.put(`${BACKEND_URL}/users`, {
-      firstName: firstNameValue,
-      lastName: lastNameValue,
-      username: usernameValue,
-      bio: bioValue,
-      style: stylesValue,
-      address: addressValue,
-      profilePicture: profilePictureUrl,
-    });
+  // USERNAME UNAVAILABLE WARNING
+  const UsernameWarning = () => {
+    return (
+      <span className="font-bold text-xs text-red-400/80 w-full">
+        this username is in use, try another one
+      </span>
+    );
   };
 
   return (
@@ -83,16 +130,11 @@ export default function EditProfile() {
         </h2>
         <div className="w-full flex flex-col items-center gap-2 justify-center">
           {/* PROFILE PICTURE PREVIEW */}
-            <img
-              src={
-                preview
-                  ? preview
-                  : DEFAULT_PFP
-              }
-              alt=""
-              className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
-            />
-          
+          <img
+            src={preview ? preview : DEFAULT_PFP}
+            alt=""
+            className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
+          />
 
           {/* PFP SET */}
           <button className="btn bg-[#83C0C1]/80 text-white">
@@ -134,6 +176,7 @@ export default function EditProfile() {
             }}
             value={usernameValue}
           />
+          {!usernameNotAvailable ? null : <UsernameWarning />}{" "}
           <textarea
             placeholder="Bio"
             name=""
