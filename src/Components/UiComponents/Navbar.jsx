@@ -1,7 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+
+  const { loginWithRedirect, logout,user,isAuthenticated} = useAuth0();
+
+  useEffect(()=>{
+    isAuthenticated? console.log(true):console.log(false)
+  },[isAuthenticated])
 
   return (
     <div className="w-full flex justify-center">
@@ -104,7 +112,7 @@ export default function Navbar() {
         </li>{" "}
         {/* PROFILE */}
         <li className="cursor-pointer">
-          <a>
+          <div>
             <div className="dropdown dropdown-top dropdown-end">
               <div tabIndex={0}>
                 <svg
@@ -126,18 +134,46 @@ export default function Navbar() {
                 tabIndex={0}
                 className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-32"
               >
-                <li>
-                  <a onClick={() => navigate("/profile/1")}>Profile</a>
-                </li>
-                <li>
-                  <a onClick={() => navigate("/edit-profile")}>Edit Profile</a>
-                </li>
-                <li>
-                  <a onClick={() => navigate("#")}>Sign Out</a>
-                </li>
+                {isAuthenticated ? (
+                  <>
+                    <li>
+                      <a onClick={() => navigate("/profile/1")}>Profile</a>
+                    </li>
+                    <li>
+                      <a onClick={() => navigate("/edit-profile")}>
+                        Edit Profile
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        onClick={() =>
+                          logout({
+                            logoutParams: { returnTo: window.location.origin },
+                          })
+                        }
+                      >
+                        Logout
+                      </a>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <a onClick={() => loginWithRedirect()}>Login</a>
+                    </li>
+                    <li>
+                      <a onClick={() => loginWithRedirect({
+                        authorizationParams:{
+                          screen_hint: "signup",
+                        },
+                        redirectUri:`${window.location.origin}/edit-profile`
+                      })}>Sign Up</a>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
-          </a>
+          </div>
         </li>
       </ul>
     </div>
