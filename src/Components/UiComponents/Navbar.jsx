@@ -5,11 +5,11 @@ import { useEffect } from "react";
 export default function Navbar() {
   const navigate = useNavigate();
 
-  const { loginWithRedirect, logout,user,isAuthenticated} = useAuth0();
+  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
 
-  useEffect(()=>{
-    isAuthenticated? console.log(true):console.log(false)
-  },[isAuthenticated])
+  // useEffect(()=>{
+  //   isAuthenticated? console.log(true):console.log(false)
+  // },[isAuthenticated])
 
   return (
     <div className="w-full flex justify-center">
@@ -42,7 +42,7 @@ export default function Navbar() {
         <li
           className="cursor-pointer"
           onClick={() => {
-            navigate("/chats");
+            isAuthenticated ? navigate("/chats") : alert("Please login");
           }}
         >
           <a>
@@ -162,12 +162,18 @@ export default function Navbar() {
                       <a onClick={() => loginWithRedirect()}>Login</a>
                     </li>
                     <li>
-                      <a onClick={() => loginWithRedirect({
-                        authorizationParams:{
-                          screen_hint: "signup",
-                        },
-                        redirectUri:`${window.location.origin}/edit-profile`
-                      })}>Sign Up</a>
+                      <a
+                        onClick={() =>
+                          loginWithRedirect({
+                            authorizationParams: {
+                              screen_hint: "signup",
+                            },
+                            redirectUri: `${window.location.origin}/edit-profile`,
+                          })
+                        }
+                      >
+                        Sign Up
+                      </a>
                     </li>
                   </>
                 )}
