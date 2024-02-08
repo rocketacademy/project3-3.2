@@ -3,15 +3,19 @@ import Carousel from "./UiComponents/Carousel";
 import Select from "react-tailwindcss-select";
 import { useState, useEffect } from "react";
 import CurrencyInput from "react-currency-input-field";
+import axios from "axios";
+import { BACKEND_URL } from "./lib/constants";
 
 export default function AddListing() {
   const [preview, setPreview] = useState([]);
   const [selectedImage, setSelectedImage] = useState([]);
   // Data for backend
+  const [categories, setCategories] = useState([])
   const [category, setCategory] = useState(null);
   const [listingTitleValue, setListingTitleValue] = useState("");
   const [priceValue, setPriceValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -20,7 +24,17 @@ export default function AddListing() {
   }, []);
 
   // ONCE BACKEND ROUTES AND CONTROLLERS ARE FILLED, GET REQUEST TO ADD IN OPTIONS FROM CATEGORIES TABLE
-  const options = [
+  const getCategories = async() => {
+    const allCategories = await axios.get(`${BACKEND_URL}/categories`)
+    setCategories(allCategories)
+  }
+  useEffect(()=>{
+    getCategories()
+  },[])
+
+  const options = categories.map(({key,value})=>{{value:category.id, label:category.name}})
+
+  let options = [
     { value: "1", label: "Digital Art" },
     { value: "2", label: "Crochet" },
     { value: "3", label: "Fashion" },
