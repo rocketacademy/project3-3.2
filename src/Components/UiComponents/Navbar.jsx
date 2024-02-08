@@ -1,16 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
+import { useCurrentUserContext } from "../lib/context/currentUserContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
 
-  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
 
-  // useEffect(()=>{
-  //   isAuthenticated? console.log(true):console.log(false)
-  // },[isAuthenticated])
+  const { currentUser } = useCurrentUserContext()
 
+  const { username } = currentUser
+
+ 
   return (
     <div className="w-full flex justify-center">
       <ul className=" fixed bottom-0 flex justify-around w-full menu menu-horizontal bg-stone-950 rounded-box">
@@ -137,7 +138,7 @@ export default function Navbar() {
                 {isAuthenticated ? (
                   <>
                     <li>
-                      <a onClick={() => navigate("/profile/1")}>Profile</a>
+                      <a onClick={() => navigate(`/profile/${username}`)}>Profile</a>
                     </li>
                     <li>
                       <a onClick={() => navigate("/edit-profile")}>

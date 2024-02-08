@@ -12,17 +12,10 @@ import Likes from "./Components/Likes";
 import AddListingPreview from "./Components/AddListingPreview";
 import Checkout from "./Components/Checkout";
 import { CheckCurrentUser } from "./Components/lib/context/currentUserContext";
-// import { useEffect } from "react";
-// import { useAuth0 } from "@auth0/auth0-react";
+
 
 export default function App() {
-  // const { user, isAuthenticated } = useAuth0();
 
-  // useEffect(() => {
-  //   if (user && isAuthenticated) {
-  //     console.log(user.email.split("@")[0]);
-  //   }
-  // }, [user, isAuthenticated]);
 
   const router = createBrowserRouter([
     {
@@ -34,7 +27,7 @@ export default function App() {
       //will need the unique ID of profile
       children: [
         {
-          path: ":uid",
+          path: ":paramUsername",
           element: <Profile />,
         },
       ],

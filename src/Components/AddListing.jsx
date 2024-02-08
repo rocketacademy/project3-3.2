@@ -2,16 +2,22 @@ import { useNavigate } from "react-router-dom";
 import Carousel from "./UiComponents/Carousel";
 import Select from "react-tailwindcss-select";
 import { useState, useEffect } from "react";
+import CurrencyInput from "react-currency-input-field";
 
 export default function AddListing() {
-  const [animal, setAnimal] = useState(null);
   const [preview, setPreview] = useState([]);
   const [selectedImage, setSelectedImage] = useState([]);
+  // Data for backend
+  const [category, setCategory] = useState(null);
+  const [listingTitleValue, setListingTitleValue] = useState("");
+  const [priceValue, setPriceValue] = useState("");
+  const [descriptionValue, setDescriptionValue] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  },[]);
+  }, []);
 
   // ONCE BACKEND ROUTES AND CONTROLLERS ARE FILLED, GET REQUEST TO ADD IN OPTIONS FROM CATEGORIES TABLE
   const options = [
@@ -22,7 +28,7 @@ export default function AddListing() {
 
   const handleChange = (value) => {
     console.log("value:", value);
-    setAnimal(value);
+    setCategory(value);
   };
   const handleImageChange = (e) => {
     console.log(e.target.files);
@@ -44,6 +50,12 @@ export default function AddListing() {
       setPreview(localUrls);
     }
   }, [selectedImage]);
+
+  useEffect(() => {
+    console.log("price", priceValue);
+    console.log("listing title", listingTitleValue);
+    console.log("description", descriptionValue);
+  }, []);
 
   return (
     <>
@@ -101,12 +113,13 @@ export default function AddListing() {
           className="file-input w-full max-w-xs mt-4"
           onChange={handleImageChange}
           required
+          maxLength={10}
         />
 
         {/* DROPDOWN */}
         <div className="mt-4">
           <Select
-            value={animal}
+            value={category}
             onChange={handleChange}
             options={options}
             isSearchable={true}
@@ -120,15 +133,23 @@ export default function AddListing() {
             placeholder="Listing Title"
             className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
             required
+            maxLength={35}
+            onChange={(e) => setListingTitleValue(e.target.value)}
+          />
+          {/* TODO: NEED SOME INPUT VALIDATION */}
+          <CurrencyInput
+            className="mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
+            id="input-example"
+            name="input-name"
+            placeholder="Price"
+            prefix="$"
+            onValueChange={(value, name, values) => {
+              console.log(value, name, values);
+              setPriceValue(values);
+            }}
+            maxLength={5}
           />
 
-          {/* TODO: NEED SOME INPUT VALIDATION */}
-          <input
-            type="text"
-            placeholder="Price"
-            className="mt-4 p-3 outline-[#83C0C1] rounded active:outline-[#83C0C1] bg-slate-300/30"
-            required
-          />
           <textarea
             placeholder="Description"
             name=""
@@ -137,6 +158,7 @@ export default function AddListing() {
             rows="10"
             className="w-full mt-4 p-3 outline-[#83C0C1] rounded active:outline-[#83C0C1] bg-slate-300/30"
             required
+            onChange={(e) => setDescriptionValue(e.target.value)}
           ></textarea>
         </div>
         <hr />
@@ -144,6 +166,13 @@ export default function AddListing() {
           <button
             onClick={() => navigate("/preview-listing")}
             className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 "
+            disabled={
+              selectedImage.length == 0 ||
+              listingTitleValue.length == 0 ||
+              priceValue == 0
+                ? true
+                : false
+            }
           >
             Save and Continue
           </button>

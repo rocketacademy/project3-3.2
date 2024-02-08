@@ -23,7 +23,6 @@ export default function EditProfile() {
   const [stylesValue, setStylesValue] = useState("");
   const [addressValue, setAddressValue] = useState("");
   const [usernameNotAvailable, setUsernameNotAvailable] = useState(false);
-  const [pfpUrl, setPfpUrl] = useState(null);
 
   const { user } = useAuth0();
   const { currentUser } = useCurrentUserContext();
@@ -158,6 +157,7 @@ export default function EditProfile() {
               id="file-upload"
               className="hidden"
               onChange={handleImageChange}
+              accept="image/*"
             />
           </button>
         </div>
@@ -202,6 +202,7 @@ export default function EditProfile() {
               setBioValue(e.target.value);
             }}
             value={bioValue}
+            maxLength={140}
           ></textarea>
           <input
             type="text"

@@ -11,7 +11,7 @@ export function CheckCurrentUser({ children }) {
   const findUser = () => {
     if ((isAuthenticated, user)) {
       axios.get(`${BACKEND_URL}/users/email/${user.email}`).then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         const userData = res.data;
         setCurrentUser(userData);
       });
