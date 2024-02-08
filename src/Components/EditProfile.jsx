@@ -9,6 +9,7 @@ import {
   ref as storageRef,
   getDownloadURL,
 } from "firebase/storage";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function EditProfile() {
   const [preview, setPreview] = useState(null);
@@ -22,7 +23,9 @@ export default function EditProfile() {
   const [stylesValue, setStylesValue] = useState("");
   const [addressValue, setAddressValue] = useState("");
   const [usernameNotAvailable, setUsernameNotAvailable] = useState(false);
+  const [pfpUrl, setPfpUrl] = useState(null);
 
+  const { user } = useAuth0();
   const { currentUser } = useCurrentUserContext();
 
   const navigate = useNavigate();
@@ -33,6 +36,7 @@ export default function EditProfile() {
   // PFP PREVIEW
   useEffect(() => {
     if (selectedImage) {
+      console.log("this is running")
       const localUrl = URL.createObjectURL(selectedImage);
       setPreview(localUrl);
     }
@@ -49,86 +53,72 @@ export default function EditProfile() {
 
   // POPULATE THE FIELDS WITH EXISTING DATA
   useEffect(() => {
-    setAddressValue(currentUser?.address);
-    setUsernameValue(currentUser?.username);
-    setBioValue(currentUser?.bio);
-    setFirstNameValue(currentUser?.firstName);
-    setLastNameValue(currentUser?.lastName);
-    setStylesValue(currentUser?.style);
-    setProfilePictureUrl(currentUser?.profilePicture);
-    setPreview(currentUser?.profilePicture);
+      setAddressValue(currentUser?.address);
+      setUsernameValue(currentUser?.username);
+      setBioValue(currentUser?.bio);
+      setFirstNameValue(currentUser?.firstName);
+      setLastNameValue(currentUser?.lastName);
+      setStylesValue(currentUser?.style);
+      setPreview(currentUser?.profilePicture);
   }, [currentUser]);
 
   useEffect(()=>{
-    console.log(preview)
-  },[preview])
+    console.log(selectedImage)
+    console.log("preview", preview)
+  },[selectedImage, preview])
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // GET REQUEST TO SEE IF USERNAME EXISTS ALREADY. IF IT DOES, NOTIFY THE USER
     // THIS REQ BELOW SHLD SEND BACK A BOOL
     try {
-      const checkUsernameAvailabity = currentUser? await axios.get(
-        `${BACKEND_URL}/users/username/${currentUser.id}/${usernameValue}`
-      ):await axios.get(`${BACKEND_URL}/users/username/new/${usernameValue}`)
+      const checkUsernameAvailabity = currentUser
+        ? await axios.get(
+            `${BACKEND_URL}/users/username/${currentUser.id}/${usernameValue}`
+          )
+        : await axios.get(`${BACKEND_URL}/users/username/new/${usernameValue}`);
       if (checkUsernameAvailabity.data) {
         console.log(checkUsernameAvailabity.data);
         setUsernameNotAvailable(checkUsernameAvailabity.data);
       } else {
         setUsernameNotAvailable(checkUsernameAvailabity.data);
         // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
-        if (selectedImage) {
-          try {
-            const storageRefInstance = storageRef(
-              storage,
-              DB_STORAGE_PFP_KEY + usernameValue
-            );
-            await uploadBytes(storageRefInstance, selectedImage);
-            const imageSrc = await getDownloadURL(storageRefInstance);
-            setProfilePictureUrl(imageSrc);
-            // ASK SAM ABOUT NEW USERS 
-            const dbUpdateUserData = await axios.put(
-              `${BACKEND_URL}/users/${currentUser.id}`,
-              {
-                firstName: firstNameValue,
-                lastName: lastNameValue,
-                username: usernameValue,
-                bio: bioValue,
-                style: stylesValue,
-                address: addressValue,
-                profilePicture: imageSrc,
-              }
-            );
-            console.log(dbUpdateUserData.data);
-            if (dbUpdateUserData) {
-              navigate(-1);
-            }
-          } catch (err) {
-            console.log(err);
+
+        try {
+          const storageRefInstance = storageRef(
+            storage,
+            DB_STORAGE_PFP_KEY + usernameValue
+          );
+          
+          if(selectedImage)await uploadBytes(storageRefInstance, selectedImage)
+          const imageSrc = selectedImage? await getDownloadURL(storageRefInstance):null
+          console.log(imageSrc)
+          let dataForBackend = {
+            email: user.email,
+            firstName: firstNameValue,
+            lastName: lastNameValue,
+            username: usernameValue,
+            bio: bioValue,
+            style: stylesValue,
+            address: addressValue,
+            profilePicture: imageSrc
+              ? imageSrc
+              : currentUser?.profilePicture
+              ? currentUser.profilePicture
+              : DEFAULT_PFP,
+          };
+          const dbUpdateUserData = currentUser
+            ? await axios.put(
+                `${BACKEND_URL}/users/${currentUser.id}`,
+                dataForBackend
+              )
+            : await axios.post(`${BACKEND_URL}/users`, dataForBackend);
+          console.log(dbUpdateUserData.data);
+          if (dbUpdateUserData) {
+            navigate("/");
           }
-        } else {
-          try {
-            const dbUpdateUserData = await axios.put(
-              `${BACKEND_URL}/users/${currentUser.id}`,
-              {
-                firstName: firstNameValue,
-                lastName: lastNameValue,
-                username: usernameValue,
-                bio: bioValue,
-                style: stylesValue,
-                address: addressValue,
-                profilePicture: currentUser.profilePicture
-                  ? currentUser.profilePicture
-                  : DEFAULT_PFP,
-              }
-            );
-            console.log(dbUpdateUserData.data);
-            if (dbUpdateUserData) {
-              navigate(-1);
-            }
-          } catch (err) {
-            console.log(err);
-          }
+        } catch (err) {
+          console.log(err);
         }
       }
     } catch (err) {
@@ -155,7 +145,7 @@ export default function EditProfile() {
         <div className="w-full flex flex-col items-center gap-2 justify-center">
           {/* PROFILE PICTURE PREVIEW */}
           <img
-            src={preview ? preview : DEFAULT_PFP}
+            src={preview? preview:DEFAULT_PFP}
             alt=""
             className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
           />
