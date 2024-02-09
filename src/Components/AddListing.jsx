@@ -32,7 +32,7 @@ export default function AddListing() {
     getCategories()
   },[])
 
-  const options = categories.map(({key,value})=>{{value:category.id, label:category.name}})
+  // const options = categories.map(({key,value})=>{{value:category.id, label:category.name}})
 
   let options = [
     { value: "1", label: "Digital Art" },
