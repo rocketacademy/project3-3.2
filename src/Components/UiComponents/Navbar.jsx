@@ -1,15 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useCurrentUserContext } from "../lib/context/currentUserContext";
+import axios from "axios";
+import { BACKEND_URL } from "../lib/constants";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
 	const navigate = useNavigate();
+	const [currentUser, setCurrentUser] = useState({})
+	const { loginWithRedirect, user, logout, isAuthenticated } = useAuth0();
 
-	const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
 
-	const { currentUser } = useCurrentUserContext();
 
-	const { username } = currentUser;
+  const findUser = () => {
+    if ((isAuthenticated, user)) {
+      axios.get(`${BACKEND_URL}/users/email/${user.email}`).then((res) => {
+        // console.log(res.data);
+        const userData = res.data;
+        setCurrentUser(userData);
+      });
+    }
+  };
+
+	useEffect(() =>
+			{
+				findUser()
+			},[]);
+	
 
 	return (
 		<div className="w-full flex justify-center">
@@ -40,7 +56,7 @@ export default function Navbar() {
 				</li>
 				{/* CHAT */}
 				<li
-					className={isAuthenticated ? "cursor-pointer" : "hidden"}
+					className={ isAuthenticated ? "cursor-pointer" : "hidden"}
 					onClick={() => navigate("/chats")}
 				>
 					<a>
@@ -135,7 +151,7 @@ export default function Navbar() {
 								{isAuthenticated ? (
 									<>
 										<li>
-											<a onClick={() => navigate(`/profile/${username}`)}>
+											<a onClick={() => navigate(`/profile/${currentUser.username}`)}>
 												Profile
 											</a>
 										</li>
