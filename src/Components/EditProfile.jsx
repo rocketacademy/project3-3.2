@@ -115,6 +115,7 @@ export default function EditProfile() {
           console.log(dbUpdateUserData.data);
           if (dbUpdateUserData) {
             navigate("/");
+						window.location.reload()
           }
         } catch (err) {
           console.log(err);

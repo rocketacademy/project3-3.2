@@ -12,7 +12,7 @@ export default function Chats() {
   }, []);
 
   const { currentUser } = useCurrentUserContext();
-  const {profilePicture} = currentUser
+  // const {profilePicture} = currentUser
 
   return (
     <>
@@ -20,7 +20,7 @@ export default function Chats() {
         <div className="flex flex-row items-center">
           <img
             className="h-10 w-10 rounded-full object-cover object-center"
-            src={profilePicture}
+            src={currentUser.profilePicture}
             alt=""
           />
           <h1 className="font-semibold text-xl ml-2">Messages</h1>
