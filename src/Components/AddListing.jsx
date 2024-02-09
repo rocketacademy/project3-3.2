@@ -9,8 +9,9 @@ import { BACKEND_URL } from "./lib/constants";
 export default function AddListing() {
   const [preview, setPreview] = useState([]);
   const [selectedImage, setSelectedImage] = useState([]);
-  // Data for backend
+	// Data from backend
   const [categories, setCategories] = useState([])
+  // Data for backend
   const [category, setCategory] = useState(null);
   const [listingTitleValue, setListingTitleValue] = useState("");
   const [priceValue, setPriceValue] = useState("");
@@ -26,19 +27,17 @@ export default function AddListing() {
   // ONCE BACKEND ROUTES AND CONTROLLERS ARE FILLED, GET REQUEST TO ADD IN OPTIONS FROM CATEGORIES TABLE
   const getCategories = async() => {
     const allCategories = await axios.get(`${BACKEND_URL}/categories`)
-    setCategories(allCategories)
+    setCategories(allCategories.data)
   }
   useEffect(()=>{
     getCategories()
   },[])
 
-  // const options = categories.map(({key,value})=>{{value:category.id, label:category.name}})
+  useEffect(()=>{
+    console.log(categories)
+  },[categories])
 
-  let options = [
-    { value: "1", label: "Digital Art" },
-    { value: "2", label: "Crochet" },
-    { value: "3", label: "Fashion" },
-  ];
+  const options = categories.map((category)=>({value:category.id, label:category.name}))
 
   const handleChange = (value) => {
     console.log("value:", value);

@@ -66,10 +66,16 @@ export default function EditProfile() {
     console.log("preview", preview)
   },[selectedImage, preview])
 
+  /*
+  the handleSubmit acts differently if user is a currentUser. it first checks if 
+  username is used by any other user, then checks if user has selected an image for upload. 
+  if user has not selected an image for upload, it will check if user has existing pfp. 
+  if user does have it, it will just resend that url to the backend. 
+  if user doesn't have existing pfp, it will assign a default pfp for the user and send that to the backend 
+  the reason for the reload method is for the useCurrentUserContext state to refresh and grab the latest data from the backend 
+  */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // GET REQUEST TO SEE IF USERNAME EXISTS ALREADY. IF IT DOES, NOTIFY THE USER
-    // THIS REQ BELOW SHLD SEND BACK A BOOL
     try {
       const checkUsernameAvailabity = currentUser
         ? await axios.get(
@@ -81,8 +87,6 @@ export default function EditProfile() {
         setUsernameNotAvailable(checkUsernameAvailabity.data);
       } else {
         setUsernameNotAvailable(checkUsernameAvailabity.data);
-        // FOR PROFILEPICTUREFILE, SEND TO FIREBASE, GET DOWNLOAD URL THEN SET profilePictureUrl
-
         try {
           const storageRefInstance = storageRef(
             storage,
