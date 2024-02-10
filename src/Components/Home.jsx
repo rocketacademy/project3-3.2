@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./UiComponents/Navbar";
 import ListingPreviewCard from "./UiComponents/ListingPreviewCard";
 import { useEffect } from "react";
+import {useAuth0} from "@auth0/auth0-react";
 
 export default function Home() {
   const navigate = useNavigate();
     useEffect(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, []);
+	const {user, isAuthenticated} = useAuth0()
   return (
     <>
       <div className="h-screen relative">
@@ -31,7 +33,7 @@ export default function Home() {
         <div className=" h-20"></div>
         <button
           onClick={() => navigate("/add-listing")}
-          className="btn w-28 btn-accent fixed bottom-16 right-5 z-19 opacity-80 hover:opacity-100 transition ease-in"
+          className={isAuthenticated? "btn w-28 btn-accent fixed bottom-16 right-5 z-19 opacity-80 hover:opacity-100 transition ease-in":"hidden" }
         >
           {" "}
           + Sell
