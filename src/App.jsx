@@ -12,10 +12,21 @@ import Likes from "./Components/Likes";
 import AddListingPreview from "./Components/AddListingPreview";
 import Checkout from "./Components/Checkout";
 import { CheckCurrentUser } from "./Components/lib/context/currentUserContext";
+import { useState } from "react";
 
 
 export default function App() {
+	
 
+	//raised state for listing creation
+	const [dataForBackend, setDataForBackend] = useState({
+		listingTitleValue: "",
+		priceValue: "",
+		descriptionValue: "",
+		dropdownSelectValue: null,
+		selectedImage: [],
+		preview:[],
+	})
 
   const router = createBrowserRouter([
     {
@@ -54,18 +65,18 @@ export default function App() {
       path: "/listing/",
       children: [
         {
-          path: ":uid",
+          path: ":listingId",
           element: <Listing />,
         },
       ],
     },
     {
       path: "/add-listing",
-      element: <AddListing />,
+      element: <AddListing setDataForBackend={setDataForBackend} dataForBackend={dataForBackend} />,
     },
     {
       path: "/preview-listing",
-      element: <AddListingPreview />,
+      element: <AddListingPreview dataForBackend={dataForBackend}/>,
     },
     {
       path: "/edit-profile",

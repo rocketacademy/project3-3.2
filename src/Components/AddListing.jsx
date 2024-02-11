@@ -6,16 +6,19 @@ import CurrencyInput from "react-currency-input-field";
 import axios from "axios";
 import { BACKEND_URL } from "./lib/constants";
 
-export default function AddListing() {
-	const [preview, setPreview] = useState([]);
-	const [selectedImage, setSelectedImage] = useState([]);
-	// Data from backend
-	const [categories, setCategories] = useState([]);
+export default function AddListing(props) {
 	// Data for backend
-	const [dropdownSelect, setDropdownSelect] = useState(null);
-	const [listingTitleValue, setListingTitleValue] = useState("");
-	const [priceValue, setPriceValue] = useState("");
-	const [descriptionValue, setDescriptionValue] = useState("");
+	const [categories, setCategories] = useState([])
+	let { dataForBackend, setDataForBackend } = props;
+	let {
+		listingTitleValue,
+		dropdownSelectValue,
+		priceValue,
+		descriptionValue,
+		selectedImage,
+		preview,
+	} = dataForBackend;
+
 
 	const navigate = useNavigate();
 
@@ -25,7 +28,7 @@ export default function AddListing() {
 
 	const getCategories = async () => {
 		const allCategories = await axios.get(`${BACKEND_URL}/categories`);
-		setCategories(allCategories.data);
+		setCategories(allCategories.data)
 	};
 	useEffect(() => {
 		getCategories();
@@ -36,18 +39,27 @@ export default function AddListing() {
 		value: category.id,
 		label: category.name,
 	}));
-
-	// Image handling
 	const handleChange = (value) => {
 		console.log("value:", value);
-		setDropdownSelect(value);
+		setDataForBackend((prevState) => ({
+			...prevState,
+			dropdownSelectValue: value,
+		}));
 	};
+
+	// Image handling
 	const handleImageChange = (e) => {
 		if (!e.target.files || e.target.files.length === 0) {
-			setSelectedImage(null);
+			setDataForBackend(prevState=>({
+				...prevState,
+				selectedImage:null
+			}))
 			return;
 		}
-		setSelectedImage(e.target.files);
+		setDataForBackend(prevState => ({
+			...prevState,
+			selectedImage:e.target.files
+		}))
 	};
 
 	useEffect(() => {
@@ -58,12 +70,15 @@ export default function AddListing() {
 					localUrls.push(URL.createObjectURL(selectedImage[file]));
 				}
 			}
-			setPreview(localUrls);
+			setDataForBackend(prevState =>({
+				...prevState,
+				preview:localUrls
+			}))
 		}
 	}, [selectedImage]);
 
 	useEffect(() => {
-		console.log(dropdownSelect?.value);
+		console.log(dropdownSelectValue?.value);
 		console.log("price", priceValue);
 		console.log("listing title", listingTitleValue);
 		console.log("description", descriptionValue);
@@ -72,7 +87,7 @@ export default function AddListing() {
 		priceValue,
 		listingTitleValue,
 		descriptionValue,
-		dropdownSelect,
+		dropdownSelectValue,
 		selectedImage,
 	]);
 
@@ -138,7 +153,7 @@ export default function AddListing() {
 				{/* DROPDOWN */}
 				<div className="mt-4">
 					<Select
-						value={dropdownSelect}
+						value={dropdownSelectValue}
 						onChange={handleChange}
 						options={options}
 						isSearchable={true}
@@ -153,7 +168,13 @@ export default function AddListing() {
 						className="w-full mt-4 p-3 bg-slate-300/30 rounded outline-[#83C0C1] active:outline-[#83C0C1]"
 						required
 						maxLength={35}
-						onChange={(e) => setListingTitleValue(e.target.value)}
+						onChange={(e) =>
+							setDataForBackend((prevState) => ({
+								...prevState,
+								listingTitleValue: e.target.value,
+							}))
+						}
+						value={listingTitleValue}
 					/>
 					{/* TODO: NEED SOME INPUT VALIDATION */}
 					<CurrencyInput
@@ -164,9 +185,13 @@ export default function AddListing() {
 						prefix="$"
 						onValueChange={(value, name, values) => {
 							console.log(value, name, values);
-							setPriceValue(value);
+							setDataForBackend((prevState) => ({
+								...prevState,
+								priceValue: value,
+							}));
 						}}
 						maxLength={5}
+						value={priceValue}
 					/>
 
 					<textarea
@@ -177,7 +202,13 @@ export default function AddListing() {
 						rows="10"
 						className="w-full mt-4 p-3 outline-[#83C0C1] rounded active:outline-[#83C0C1] bg-slate-300/30"
 						required
-						onChange={(e) => setDescriptionValue(e.target.value)}
+						onChange={(e) =>
+							setDataForBackend((prevState) => ({
+								...prevState,
+								descriptionValue: e.target.value,
+							}))
+						}
+						value={descriptionValue}
 					></textarea>
 				</div>
 				<hr />
