@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../lib/constants";
 import axios from "axios";
 import { useCurrentUserContext } from "../lib/context/currentUserContext";
+import { storage, DB_STORAGE_CHAT_IMAGE_KEY } from "../lib/firebase";
+import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "firebase/storage";
 
 export default function SendMessageBar() {
   const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState();
+  const [image, setImage] = useState("");
 
   const { currentUser } = useCurrentUserContext();
   console.log("user", currentUser);
@@ -14,13 +21,25 @@ export default function SendMessageBar() {
     setUserId(currentUser.id);
   }, [currentUser]);
 
-  //Save message to state
-  const handleChange = (event) => {
-    setNewMessage(event.target.value);
+  const handleImageChange = (e) => {
+    console.log(e.target.files[0]);
+    setImage(e.target.files[0]);
   };
 
   //When user clicks submit, push new message to backend (have to change when we set up room ID)
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (image) {
+      const storageRefInstance = storageRef(
+        storage,
+        DB_STORAGE_CHAT_IMAGE_KEY + userId
+      );
+      await uploadBytes(storageRefInstance, image);
+      const imageSrc = await getDownloadURL(storageRefInstance);
+      console.log(imageSrc);
+    }
+
     let response = await axios.post(`${BACKEND_URL}/chat/message`, {
       comment: newMessage,
       // chatroomId: 1,
@@ -36,7 +55,13 @@ export default function SendMessageBar() {
     <form className="fixed right-0 left-0 bottom-0 w-full flex justify-center">
       <div className=" rounded-full h-12 flex flex-row bg-slate-200 mt-10 items-center">
         <button type="button" className="ml-3">
-          <input type="file" name="" id="file-upload" className="hidden" />
+          <input
+            type="file"
+            onChange={handleImageChange}
+            name=""
+            id="file-upload"
+            className="hidden"
+          />
           <label className="cursor-pointer" htmlFor="file-upload">
             {" "}
             <svg
@@ -57,7 +82,9 @@ export default function SendMessageBar() {
           className=" ml-4 border-0 h-8 flex-1 outline-none p-4 bg-slate-200 caret-white text-left font-semibold"
           type="text"
           placeholder="Send message"
-          onChange={handleChange}
+          onChange={(e) => {
+            setNewMessage(e.target.value);
+          }}
         />
         {/* SUBMIT */}
         <button

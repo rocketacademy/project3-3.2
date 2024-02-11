@@ -20,5 +20,5 @@ export const storage = getStorage(app);
 
 // Keys
 export const DB_STORAGE_PFP_KEY = "profile-img/";
-export const DB_STORAGE_CHAT_IMAGE_KEY= "chat-img/"
-export const DB_STORAGE_LISTING_IMAGE_KEY="listing-img/"
+export const DB_STORAGE_CHAT_IMAGE_KEY = "chat-img/";
+export const DB_STORAGE_LISTING_IMAGE_KEY = "listing-img/";
