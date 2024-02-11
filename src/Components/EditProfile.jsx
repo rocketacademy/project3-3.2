@@ -35,7 +35,7 @@ export default function EditProfile() {
   // PFP PREVIEW
   useEffect(() => {
     if (selectedImage) {
-      console.log("this is running")
+      console.log("this is running");
       const localUrl = URL.createObjectURL(selectedImage);
       setPreview(localUrl);
     }
@@ -52,19 +52,19 @@ export default function EditProfile() {
 
   // POPULATE THE FIELDS WITH EXISTING DATA
   useEffect(() => {
-      setAddressValue(currentUser?.address);
-      setUsernameValue(currentUser?.username);
-      setBioValue(currentUser?.bio);
-      setFirstNameValue(currentUser?.firstName);
-      setLastNameValue(currentUser?.lastName);
-      setStylesValue(currentUser?.style);
-      setPreview(currentUser?.profilePicture);
+    setAddressValue(currentUser?.address);
+    setUsernameValue(currentUser?.username);
+    setBioValue(currentUser?.bio);
+    setFirstNameValue(currentUser?.firstName);
+    setLastNameValue(currentUser?.lastName);
+    setStylesValue(currentUser?.style);
+    setPreview(currentUser?.profilePicture);
   }, [currentUser]);
 
-  useEffect(()=>{
-    console.log(selectedImage)
-    console.log("preview", preview)
-  },[selectedImage, preview])
+  useEffect(() => {
+    console.log(selectedImage);
+    console.log("preview", preview);
+  }, [selectedImage, preview]);
 
   /*
   the handleSubmit acts differently if user is a currentUser. it first checks if 
@@ -92,10 +92,13 @@ export default function EditProfile() {
             storage,
             DB_STORAGE_PFP_KEY + usernameValue
           );
-          
-          if(selectedImage)await uploadBytes(storageRefInstance, selectedImage)
-          const imageSrc = selectedImage? await getDownloadURL(storageRefInstance):null
-          console.log(imageSrc)
+
+          if (selectedImage)
+            await uploadBytes(storageRefInstance, selectedImage);
+          const imageSrc = selectedImage
+            ? await getDownloadURL(storageRefInstance)
+            : null;
+          console.log(imageSrc);
           let dataForBackend = {
             email: user.email,
             firstName: firstNameValue,
@@ -119,7 +122,7 @@ export default function EditProfile() {
           console.log(dbUpdateUserData.data);
           if (dbUpdateUserData) {
             navigate("/");
-						window.location.reload()
+            window.location.reload();
           }
         } catch (err) {
           console.log(err);
@@ -149,7 +152,7 @@ export default function EditProfile() {
         <div className="w-full flex flex-col items-center gap-2 justify-center">
           {/* PROFILE PICTURE PREVIEW */}
           <img
-            src={preview? preview:DEFAULT_PFP}
+            src={preview ? preview : DEFAULT_PFP}
             alt=""
             className="h-32 w-32 rounded-full object-cover object-center flex-shrink-0"
           />

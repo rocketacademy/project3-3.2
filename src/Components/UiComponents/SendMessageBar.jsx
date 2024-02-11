@@ -1,4 +1,37 @@
-function SendMessageBar() {
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../lib/constants";
+import axios from "axios";
+import { useCurrentUserContext } from "../lib/context/currentUserContext";
+
+export default function SendMessageBar() {
+  const [newMessage, setNewMessage] = useState("");
+  const [userId, setUserId] = useState();
+
+  const { currentUser } = useCurrentUserContext();
+  console.log("user", currentUser);
+
+  useEffect(() => {
+    setUserId(currentUser.id);
+  }, [currentUser]);
+
+  //Save message to state
+  const handleChange = (event) => {
+    setNewMessage(event.target.value);
+  };
+
+  //When user clicks submit, push new message to backend (have to change when we set up room ID)
+  const handleSubmit = async () => {
+    let response = await axios.post(`${BACKEND_URL}/chat/message`, {
+      comment: newMessage,
+      // chatroomId: 1,
+      sender: userId,
+    });
+
+    console.log("submit");
+
+    setNewMessage("");
+  };
+
   return (
     <form className="fixed right-0 left-0 bottom-0 w-full flex justify-center">
       <div className=" rounded-full h-12 flex flex-row bg-slate-200 mt-10 items-center">
@@ -24,9 +57,14 @@ function SendMessageBar() {
           className=" ml-4 border-0 h-8 flex-1 outline-none p-4 bg-slate-200 caret-white text-left font-semibold"
           type="text"
           placeholder="Send message"
+          onChange={handleChange}
         />
         {/* SUBMIT */}
-        <button type="submit" className="h-9 rounded-full w-9 mr-1">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="h-9 rounded-full w-9 mr-1"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -40,5 +78,3 @@ function SendMessageBar() {
     </form>
   );
 }
-
-export default SendMessageBar;

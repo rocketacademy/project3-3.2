@@ -1,9 +1,29 @@
 import SendMessageBar from "./UiComponents/SendMessageBar";
 import ChatBubble from "./UiComponents/ChatBubble";
 import { useNavigate } from "react-router-dom";
-export default function Chatroom(){
-	const navigate = useNavigate()
-	return (
+import { useEffect, useState } from "react";
+import { useCurrentUserContext } from "./lib/context/currentUserContext";
+
+import { BACKEND_URL } from "./lib/constants";
+
+export default function Chatroom() {
+  const [newMessage, setNewMessage] = useState("");
+
+  const { currentUser } = useCurrentUserContext();
+
+  const navigate = useNavigate();
+
+  //Save state to message
+  const handleChange = (event) => {
+    setNewMessage(event.target.value);
+  };
+
+  //When user clicks submit
+  const handleSubmit = async () => {
+    console.log("submit");
+  };
+
+  return (
     <>
       <div className="h-screen mx-4 mt-2">
         <div className="h-10 w-full flex flex-row items-center fixed top-0 z-20 mt-2">
