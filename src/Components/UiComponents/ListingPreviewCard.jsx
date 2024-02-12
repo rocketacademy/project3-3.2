@@ -64,7 +64,7 @@ export default function ListingPreviewCard(props) {
         >
           <img
             className="w-40 aspect-[4/5] object-cover object-center border-black border-t-2 border-b-2"
-            src={image[0].url}
+            src={image? image[0].url : null}
             alt=""
           />
         </div>
