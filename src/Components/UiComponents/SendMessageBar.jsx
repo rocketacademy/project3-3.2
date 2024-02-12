@@ -13,7 +13,7 @@ export default function SendMessageBar() {
   const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState();
   const [image, setImage] = useState("");
-  const [fileUrl, setFileUrl] = useState(second);
+  const [fileUrl, setFileUrl] = useState("");
 
   const { currentUser } = useCurrentUserContext();
   console.log("user", currentUser);
@@ -48,11 +48,18 @@ export default function SendMessageBar() {
       sender: userId,
     });
 
-    console.log("submit");
+    const messageId = response.data.id;
+    console.log(response.data.id, messageId);
     //get response message id
     //send request to post chat_images
 
+    let createImageResponse = await axios.post(`${BACKEND_URL}/chat/image`, {
+      url: fileUrl,
+      chatroomMessagesId: messageId,
+    });
+
     setNewMessage("");
+    setFileUrl("");
   };
 
   return (
