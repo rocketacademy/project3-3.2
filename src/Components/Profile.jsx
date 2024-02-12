@@ -8,7 +8,7 @@ import { BACKEND_URL } from "./lib/constants";
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState({});
-  const [listingIdArr, setListingIdArr] = useState([]);
+  const [listings, setListings] = useState([]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -25,10 +25,10 @@ export default function Profile() {
   };
 
   const getListingsOfUser = async () => {
-    const listingIdArr = await axios.get(
+    const listings = await axios.get(
       `${BACKEND_URL}/listings/user/${userProfile.id}`
     );
-    setListingIdArr(listingIdArr.data);
+    setListings(listings.data);
   };
 
   useEffect(() => {
@@ -88,11 +88,17 @@ export default function Profile() {
         <h2 className="font-bold text-2xl text-center underline">Listings</h2>
 
         <ul className="flex flex-col justify-center items-center">
-          {listingIdArr
+          {listings
             .slice()
             .reverse()
-            .map((listingId) => (
-              <LargeListingPreviewCard key={listingId} listingId={listingId} />
+            .map((listing) => (
+              <LargeListingPreviewCard
+                key={listing.id}
+                title={listing.title}
+                price={listing.price}
+                id={listing.id}
+                images={listing.listing_images}
+              />
             ))}
         </ul>
 

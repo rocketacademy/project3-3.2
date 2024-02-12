@@ -1,53 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import Carousel from "./Carousel";
 import { useEffect, useState } from "react";
-import { BACKEND_URL } from "../lib/constants";
-import axios from "axios";
+
 
 export default function LargeListingPreviewCard(props) {
-  const [listingData, setListingData] = useState({});
-  const [loading, setLoading] = useState(true);
 
-  const { listingId } = props;
+const { title, price, id, images } = props
 
-  const getListingData = async () => {
-    const listingData = await axios.get(`${BACKEND_URL}/listings/${listingId}`);
-    console.log(listingData.data);
-    setListingData(listingData.data);
-  };
-  useEffect(() => {
-    getListingData();
-  }, []);
-  useEffect(() => {
-    if (listingData.listing) setLoading(false);
-  }, [listingData]);
+const imgArr = images.map(image=> image.url) 
 
   const navigate = useNavigate();
 
   return (
     <>
       <article className=" mt-2 ">
-        {loading ? (
-          <div className="h-full w-full flex justify-center items-center">
-            <span className="loading loading-spinner text-[#6962AD]/60 loading-lg"></span>
-          </div>
-        ) : (
-          <>
+
             <hr />
-            <div onClick={() => navigate(`/listing/${listingId}`)}>
+            <div onClick={() => navigate(`/listing/${id}`)}>
               <h2 className="font-bold leading-10 mt-4 text-2xl">
-                {listingData.listing.title}
+                {title}
               </h2>
               <h3 className="font-bold leading-10 mb-2 text-xl">
-                ${listingData.listing.price}
+                ${price}
               </h3>
             </div>
             <div className="">
-              <Carousel imgArr={listingData.images} />
+              <Carousel imgArr={imgArr} />
               <div className="h-10"></div>
             </div>
-          </>
-        )}
+  
       </article>
     </>
   );
