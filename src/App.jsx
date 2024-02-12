@@ -14,19 +14,16 @@ import Checkout from "./Components/Checkout";
 import { CheckCurrentUser } from "./Components/lib/context/currentUserContext";
 import { useState } from "react";
 
-
 export default function App() {
-	
-
-	//raised state for listing creation
-	const [dataForBackend, setDataForBackend] = useState({
-		listingTitleValue: "",
-		priceValue: "",
-		descriptionValue: "",
-		dropdownSelectValue: null,
-		selectedImage: [],
-		preview:[],
-	})
+  //raised state for listing creation
+  const [dataForBackend, setDataForBackend] = useState({
+    listingTitleValue: "",
+    priceValue: "",
+    descriptionValue: "",
+    dropdownSelectValue: null,
+    selectedImage: [],
+    preview: [],
+  });
 
   const router = createBrowserRouter([
     {
@@ -51,7 +48,7 @@ export default function App() {
       path: "/chat/",
       children: [
         {
-          path: ":uid",
+          path: ":chatroomId",
           element: <Chatroom />,
         },
       ],
@@ -72,11 +69,16 @@ export default function App() {
     },
     {
       path: "/add-listing",
-      element: <AddListing setDataForBackend={setDataForBackend} dataForBackend={dataForBackend} />,
+      element: (
+        <AddListing
+          setDataForBackend={setDataForBackend}
+          dataForBackend={dataForBackend}
+        />
+      ),
     },
     {
       path: "/preview-listing",
-      element: <AddListingPreview dataForBackend={dataForBackend}/>,
+      element: <AddListingPreview dataForBackend={dataForBackend} />,
     },
     {
       path: "/edit-profile",

@@ -1,16 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Carousel from "./UiComponents/Carousel";
 import ReviewBlock from "./UiComponents/ReviewBlock";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "./lib/constants";
-import { useState } from "react";
+import { useCurrentUserContext } from "./lib/context/currentUserContext";
 
 export default function Listing() {
+  const [userId, setUserId] = useState();
   const [listingData, setListingData] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { listingId } = useParams();
+  const { currentUser } = useCurrentUserContext();
+
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -18,17 +21,38 @@ export default function Listing() {
     getListingData();
   }, []);
 
+  useEffect(() => {
+    setUserId(currentUser.id);
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (listingData.listing) setLoading(false);
+  }, [listingData]);
+
   const getListingData = async () => {
     const listingData = await axios.get(`${BACKEND_URL}/listings/${listingId}`);
     console.log(listingData.data);
     setListingData(listingData.data);
   };
 
-  useEffect(() => {
-    if (listingData.title) setLoading(false);
-  }, [listingData]);
 
   const imgArr = listingData.listing_images?.map((image) => image.url);
+
+
+  // Creates request to find/ create chatroom
+  const handleClick = async () => {
+    console.log(listingId);
+
+    let response = await axios.post(`${BACKEND_URL}/chat/chatroom`, {
+      listingId: listingId,
+      potentialBuyerId: userId,
+    });
+
+    const chatroomId = response.data.id;
+    console.log(chatroomId);
+
+    navigate(`/chat/${chatroomId}`);
+  };
 
   return (
     <>
@@ -91,7 +115,7 @@ export default function Listing() {
                 viewBox="0 0 24 24"
                 fill="#83C0C1"
                 className="w-10 h-10"
-                onClick={() => navigate("/chat/1")}
+                onClick={handleClick}
               >
                 <path
                   fillRule="evenodd"

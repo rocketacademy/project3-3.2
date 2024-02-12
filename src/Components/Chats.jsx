@@ -13,11 +13,11 @@ export default function Chats() {
 
   const { currentUser } = useCurrentUserContext();
   // const {profilePicture} = currentUser
-	// get current user
-	// get find all chat where currentUser is sender 
-	// get chat with eager loading for listing 
-	// if listing sellerId == currentUser 
-	// do css or html to mark that the chatroom block is a room where currentUser.id is sellerId
+  // get current user
+  // get find all chat where currentUser is sender
+  // get chat with eager loading for listing
+  // if listing sellerId == currentUser
+  // do css or html to mark that the chatroom block is a room where currentUser.id is sellerId
 
   return (
     <>
