@@ -13,6 +13,7 @@ export default function SendMessageBar() {
   const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState();
   const [image, setImage] = useState("");
+  const [fileUrl, setFileUrl] = useState(second);
 
   const { currentUser } = useCurrentUserContext();
   console.log("user", currentUser);
@@ -37,6 +38,7 @@ export default function SendMessageBar() {
       );
       await uploadBytes(storageRefInstance, image);
       const imageSrc = await getDownloadURL(storageRefInstance);
+      setFileUrl(imageSrc);
       console.log(imageSrc);
     }
 
@@ -47,6 +49,8 @@ export default function SendMessageBar() {
     });
 
     console.log("submit");
+    //get response message id
+    //send request to post chat_images
 
     setNewMessage("");
   };
