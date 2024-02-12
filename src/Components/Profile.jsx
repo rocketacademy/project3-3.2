@@ -8,6 +8,7 @@ import { BACKEND_URL } from "./lib/constants";
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState({});
+  const [listingIdArr, setListingIdArr] = useState([]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -23,6 +24,13 @@ export default function Profile() {
     });
   };
 
+  const getListingsOfUser = async() => {
+    const listingIdArr = await axios.get(
+      `${BACKEND_URL}/listings/user/${userProfile.id}`
+    );
+    setListingIdArr(listingIdArr.data);
+  };
+
   useEffect(() => {
     if (paramUsername) {
       getUserByParams();
@@ -30,13 +38,14 @@ export default function Profile() {
   }, [paramUsername]);
 
   useEffect(() => {
-    console.log(userProfile.style);
+    if (userProfile) getListingsOfUser();
   }, [userProfile]);
+
 
   const navigate = useNavigate();
   return (
     <>
-      <style>{`body:before,html:before{position:fixed;background-image:url('https://media.giphy.com/media/kcILLv8U4uR2gSrMIz/giphy.gif');pointer-events:none}*{cursor:url(https://cur.cursors-4u.net/games/gam-14/gam1384.cur),auto!important}:root{--logo-blue:lightpurple;--darker-blue:silver;--lighter-blue:lightpurple;--even-lighter-blue:lightpurple;--lightest-blue:lightpurple;--dark-orange:lightpurple;--light-orange:lightpurple;--even-lighter-orange:transparent}html:before{animation:8s steps(10) infinite grain;content:"";height:300%;left:-50%;opacity:.2;top:-110%;width:300%}@keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-10%)}20%{transform:translate(-15%,5%)}30%{transform:translate(7%,-25%)}40%{transform:translate(-5%,25%)}50%{transform:translate(-15%,10%)}60%{transform:translate(15%,0)}70%{transform:translate(0,15%)}80%{transform:translate(3%,35%)}90%{transform:translate(-10%,10%)}}body{font-family:Courier;font-size:15pt;font-weight:700;font-style:normal;text-decoration:none}body:before{content:" ";height:100vh;width:100vw;display:block;top:0;left:0;z-index:100;background-size:cover;background-repeat:no-repeat;animation:4s forwards yourAnimation}@keyframes yourAnimation{0%,75%{opacity:1}100%{opacity:0}}h1{text-shadow:1px 1px 2px #000,0 0 25px purple,0 0 5px gold!important}h1,h2,h3,h4,p{color:silver!important}`}</style>
+      <style>{`${userProfile.style}`}</style>
       <div className="h-screen mx-4 mt-4">
         <div className="flex flex-row items-center gap-2 mb-4">
           {userProfile.profilePicture ? (
@@ -80,9 +89,12 @@ export default function Profile() {
         <h2 className="font-bold text-2xl text-center underline">Listings</h2>
 
         <div className="flex flex-col justify-center items-center">
-          <LargeListingPreviewCard />
-          <LargeListingPreviewCard />
-          <LargeListingPreviewCard />
+          {listingIdArr
+            .slice()
+            .reverse()
+            .map((listingId) => (
+              <LargeListingPreviewCard key={listingId} listingId={listingId} />
+            ))}
         </div>
 
         {/* GET ALL LISTINGS, GET ALL REVIEWS TO EACH LISTING AND MAP HERE MAYBE DO PAGINATION?  */}
