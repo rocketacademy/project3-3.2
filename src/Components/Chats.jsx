@@ -4,8 +4,6 @@ import ChatroomBlock from "./UiComponents/ChatroomBlock";
 import { useEffect } from "react";
 import { useCurrentUserContext } from "./lib/context/currentUserContext";
 
-// import { Server } from "socket.io";
-
 export default function Chats() {
   const searchType = "Search Messages";
 
@@ -15,13 +13,11 @@ export default function Chats() {
 
   const { currentUser } = useCurrentUserContext();
   // const {profilePicture} = currentUser
-
-  useEffect(() => {
-    // socket = io(`${BACKEND_URL}`);
-    // socket.emit("setup", user);
-    // socket.on("connnection", () => setSocketConnected(true));
-    console.log(currentUser);
-  }, []);
+  // get current user
+  // get find all chat where currentUser is sender
+  // get chat with eager loading for listing
+  // if listing sellerId == currentUser
+  // do css or html to mark that the chatroom block is a room where currentUser.id is sellerId
 
   return (
     <>

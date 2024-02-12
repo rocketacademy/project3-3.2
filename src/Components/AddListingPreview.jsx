@@ -1,23 +1,101 @@
 import { useNavigate } from "react-router-dom";
 import Carousel from "./UiComponents/Carousel";
 import { useEffect } from "react";
+import { useCurrentUserContext } from "./lib/context/currentUserContext";
+import axios from "axios";
+import { BACKEND_URL } from "./lib/constants";
+import { storage, DB_STORAGE_LISTING_IMAGE_KEY } from "./lib/firebase";
+import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "firebase/storage";
+import { useState } from "react";
 
-function AddListingPreview() {
-    const navigate = useNavigate();
+function AddListingPreview(props) {
+  const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState("");
+  const navigate = useNavigate();
 
-    // JUST DUMMY DATA. ONCE BACKEND CONTROLLERS ARE SETUP, GET REQ FOR ARR OF IMAGES FROM BACKEND FOR THE LISTING
-    let imgArr = [
-      "https://i.pinimg.com/564x/17/4e/4c/174e4c8c81c915dbf7362a663fbfe294.jpg",
-      "https://i.pinimg.com/564x/73/65/9a/73659ae23acd89daefe7e55be100d598.jpg",
-      "https://i.pinimg.com/564x/d3/4c/49/d34c494a0ca5e7712516512e1b22f585.jpg",
-      "https://i.pinimg.com/564x/d7/1c/af/d71cafc8b6c94dd3f40ae3cb84047ccc.jpg",
-    ];
+  const { currentUser } = useCurrentUserContext();
+  let { dataForBackend } = props;
+  let {
+    listingTitleValue,
+    priceValue,
+    descriptionValue,
+    dropdownSelectValue,
+    selectedImage,
+    preview,
+  } = dataForBackend;
 
-    useEffect(()=>{
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    },[])
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    if (listingTitleValue.length == 0) navigate(-1);
+  }, []);
 
- 
+  useEffect(() => {
+    console.log(currentUser);
+    console.log(selectedImage[0].name);
+    getCategory();
+  }, []);
+
+  const getCategory = async () => {
+    const categoryName = await axios.get(
+      `${BACKEND_URL}/categories/${dropdownSelectValue.value}`
+    );
+    setCategory(categoryName.data);
+  };
+
+  /*
+   * Submitting data will happen in 4 steps
+   * 1) POST listing to listing data table.
+   * 2) Upload the selectedImages and get the download URL from Firebase
+   * 3) GET listingId
+   * 4) POST to listingImages data table with listingId and download URL
+   * */
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    let imgUrls = [];
+    e.preventDefault();
+    try {
+      const createListing = await axios.post(`${BACKEND_URL}/listings`, {
+        title: listingTitleValue,
+        description: descriptionValue,
+        price: Number(priceValue),
+        sellerId: currentUser.id,
+        categoryId: dropdownSelectValue.value,
+      });
+      console.log(createListing.data);
+      for (let image of selectedImage) {
+        const storageRefInstance = storageRef(
+          storage,
+          DB_STORAGE_LISTING_IMAGE_KEY +
+            `${createListing.data.id}/` +
+            image.name
+        );
+        await uploadBytes(storageRefInstance, image);
+        const imageUrl = await getDownloadURL(storageRefInstance);
+        imgUrls.push(imageUrl);
+      }
+      console.log(imgUrls);
+      //sequelize backend is using bulk create here, so what I'm doing is sending an object that has an array of objects as its only attribute and each element of that array must contain listingId and the url
+      const imagesForBackend = imgUrls.map((imgUrl) => ({
+        listingId: createListing.data.id,
+        url: imgUrl,
+      }));
+      console.log(imagesForBackend);
+      const sendImagesForBackend = await axios.post(
+        `${BACKEND_URL}/listing-images`,
+        { listingImages: imagesForBackend }
+      );
+      console.log(sendImagesForBackend.data);
+      if (sendImagesForBackend.data)
+        navigate(`/profile/${currentUser.username}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <div className="h-screen mx-4 mt-2 ">
@@ -49,17 +127,24 @@ function AddListingPreview() {
         </h2>
         <hr />
         <h2 className="font-bold leading-10 mt-4 text-2xl">
-          ARTIST COMMISSION
+          {listingTitleValue}
         </h2>
-        <h3 className="font-bold leading-10 mt-2 mb-4 text-xl">$40</h3>
-        <Carousel imgArr={imgArr} />
+        <h3 className="font-bold leading-10 mt-2 mb-4 text-xl">
+          ${priceValue}
+        </h3>
+        <Carousel imgArr={preview} />
         <div className="flex flex-row items-center gap-5 py-4">
           <img
-            src="https://i.pinimg.com/564x/8e/c8/22/8ec8220d8f0d181d49adff19f98632b2.jpg"
+            src={currentUser.profilePicture}
             alt=""
             className="h-14 w-14 rounded-full object-cover object-center"
           />
-          <h3 className="font-bold text-xl">Felicia</h3>
+          <div className="flex flex-col">
+            <h3 className="font-bold text-xl">
+              {currentUser.firstName} {currentUser.lastName}
+            </h3>
+            <h2 className="font-semibold text-sm">@{currentUser.username}</h2>
+          </div>{" "}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -74,14 +159,22 @@ function AddListingPreview() {
           </svg>
         </div>
         <h2 className="font-bold text-xl pb-2">Description</h2>
-        <p className="text-sm pb-8">
-          Hi! I am a digital artist and am currently taking commissions. HMU and
-          send me what you have in mind that you&apos;d like to bring to life!{" "}
-        </p>
+        <p className="text-sm pb-8">{descriptionValue}</p>
+        <button className=" bg-[#6C22A6]/60 text-white outline-none border-none  opacity-80 hover:opacity-100 transition ease-in py-1 px-2 rounded-full mb-4">
+          {category}
+        </button>
         <hr />
         <div className="flex flex-row items-center justify-center mt-4 mb-4">
-          <button className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 ">
-            Post
+          <button
+            onClick={handleSubmit}
+            className="btn w-full bg-[#83C0C1] text-white text-lg relative bottom-0 hover:opacity-100 transition ease-in mb-4 "
+            disabled={loading ? true : false}
+          >
+            {loading ? (
+              <span className="loading loading-dots loading-lg"></span>
+            ) : (
+              "Post"
+            )}
           </button>
         </div>
       </div>
