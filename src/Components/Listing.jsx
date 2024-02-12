@@ -14,7 +14,6 @@ export default function Listing() {
   const { listingId } = useParams();
   const { currentUser } = useCurrentUserContext();
 
-
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     console.log(listingId);
@@ -26,7 +25,7 @@ export default function Listing() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (listingData.listing) setLoading(false);
+    if (listingData.listing_images) setLoading(false);
   }, [listingData]);
 
   const getListingData = async () => {
@@ -35,9 +34,7 @@ export default function Listing() {
     setListingData(listingData.data);
   };
 
-
   const imgArr = listingData.listing_images?.map((image) => image.url);
-
 
   // Creates request to find/ create chatroom
   const handleClick = async () => {
@@ -126,9 +123,11 @@ export default function Listing() {
             </div>
             <h2 className="font-bold text-xl pb-2">Description</h2>
             <p className="text-sm pb-8">{listingData.description}</p>
-            <button className=" bg-[#6C22A6]/60 text-white outline-none border-none  opacity-80 hover:opacity-100 transition ease-in py-1 px-2 rounded-full mb-4">
-              {listingData.category.name}
-            </button>
+            {listingData.category ? (
+              <button className=" bg-[#6C22A6]/60 text-white outline-none border-none  opacity-80 hover:opacity-100 transition ease-in py-1 px-2 rounded-full mb-4">
+                {listingData.category.name}
+              </button>
+            ) : null}
             <hr />
             <h2 className="font-bold text-xl my-4">Reviews</h2>
             <div className="pt-2 pb-16">
