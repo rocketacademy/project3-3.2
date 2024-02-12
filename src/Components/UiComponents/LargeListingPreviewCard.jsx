@@ -26,7 +26,7 @@ export default function LargeListingPreviewCard(props) {
 
   return (
     <>
-      <div className=" mt-2 ">
+      <article className=" mt-2 ">
         {loading ? (
           <div className="h-full w-full flex justify-center items-center">
             <span className="loading loading-spinner text-[#6962AD]/60 loading-lg"></span>
@@ -48,7 +48,7 @@ export default function LargeListingPreviewCard(props) {
             </div>
           </>
         )}
-      </div>
+      </article>
     </>
   );
 }
