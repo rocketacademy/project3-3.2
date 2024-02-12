@@ -48,7 +48,7 @@ export default function App() {
       path: "/chat/",
       children: [
         {
-          path: ":uid",
+          path: ":chatroomId",
           element: <Chatroom />,
         },
       ],
