@@ -8,12 +8,15 @@ import {
   ref as storageRef,
   getDownloadURL,
 } from "firebase/storage";
+import { useParams } from "react-router-dom";
 
 export default function SendMessageBar() {
   const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState();
   const [image, setImage] = useState("");
   const [fileUrl, setFileUrl] = useState("");
+  const { chatroomId } = useParams();
+  console.log(`chat`, chatroomId);
 
   const { currentUser } = useCurrentUserContext();
   console.log("user", currentUser);
@@ -27,11 +30,17 @@ export default function SendMessageBar() {
     setImage(e.target.files[0]);
   };
 
-  //When user clicks submit, push new message to backend (have to change when we set up room ID)
+  /*
+   * Submitting data will happen in 3 steps
+   * 1) If there is image, first upload to firebase to retrieve URL.
+   * 2) POST message to chatroom_messages to get message ID.
+   * 3) POST image to chat_images with the URL and ID
+   *
+   * */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (image) {
+    if (image !== "") {
       const storageRefInstance = storageRef(
         storage,
         DB_STORAGE_CHAT_IMAGE_KEY + userId
@@ -44,19 +53,19 @@ export default function SendMessageBar() {
 
     let response = await axios.post(`${BACKEND_URL}/chat/message`, {
       comment: newMessage,
-      // chatroomId: 1,
+      chatroomId: chatroomId,
       sender: userId,
     });
 
     const messageId = response.data.id;
     console.log(response.data.id, messageId);
-    //get response message id
-    //send request to post chat_images
 
-    let createImageResponse = await axios.post(`${BACKEND_URL}/chat/image`, {
-      url: fileUrl,
-      chatroomMessagesId: messageId,
-    });
+    if (image !== "") {
+      let createImageResponse = await axios.post(`${BACKEND_URL}/chat/image`, {
+        url: fileUrl,
+        chatroomMessagesId: messageId,
+      });
+    }
 
     setNewMessage("");
     setFileUrl("");
