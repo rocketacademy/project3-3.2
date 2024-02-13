@@ -64,12 +64,14 @@ export default function ListingPreviewCard(props) {
         >
           <img
             className="w-40 aspect-[4/5] object-cover object-center border-black border-t-2 border-b-2"
-            src={image? image[0].url : null}
+            src={image ? image[0].url : null}
             alt=""
           />
         </div>
-        <div className="rounded-b-lg flex flex-row items-center h-full">
-          <p className="font-bold flex-1 text-sm ml-1 align-middle ">{title}</p>
+        <div className="rounded-b-lg flex flex-row items-center  h-full">
+          <p className="font-bold max-w-50 flex-1 overflow-hidden text-sm ml-1 align-middle whitespace-pre">
+            {title}
+          </p>
           <div className="bg-black h-full ">
             <p className="text-white font-bold flex-initial align-middle mx-1">
               ${price}

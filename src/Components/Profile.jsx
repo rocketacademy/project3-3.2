@@ -41,6 +41,7 @@ export default function Profile() {
     if (userProfile) getListingsOfUser();
   }, [userProfile]);
 
+
   const navigate = useNavigate();
   return (
     <div>
@@ -98,6 +99,7 @@ export default function Profile() {
                 price={listing.price}
                 id={listing.id}
                 images={listing.listing_images}
+                email={userProfile.email}
               />
             ))}
         </ul>
