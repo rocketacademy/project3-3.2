@@ -24,3 +24,8 @@ export const deleteListing = async (id) => {
     console.log(error);
   }
 };
+
+// TODO: CLIENT SIDE IMAGE OPTIMIZATION
+export const imageOptimization = async () =>{
+
+}
