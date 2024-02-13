@@ -1,6 +1,4 @@
-import { ref as storageRef, listAll, deleteObject } from "firebase/storage";
-import { storage } from "./lib/firebase";
-import { useEffect } from "react";
+
 import { BACKEND_URL } from "./lib/constants";
 
 export default function Prototyping() {
