@@ -1,27 +1,23 @@
-export default function Prototyping() {
-  return (
-    <>
-      <style>
-        {`
-        html{
-            background-image: url('https://media.giphy.com/media/kcILLv8U4uR2gSrMIz/giphy.gif') !important;
-        }
+import { ref as storageRef, listAll, deleteObject } from "firebase/storage";
+import { storage } from "./lib/firebase";
+import { useEffect } from "react";
+import { BACKEND_URL } from "./lib/constants";
 
-        h1 {
-                background-color: red;
-                color: white;
-                font-size: 2em
-            }
-          p{
-            color:red
-          }`}
-      </style>
-      <div className="">
-        <h1 className="fooDiv">Hello world</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, quam!
-        </p>
-      </div>
-    </>
-  );
+export default function Prototyping() {
+  let id = 1;
+
+  const deleteListing = async () => {
+    try {
+      const deleteRequest = await axios.delete(`${BACKEND_URL}/listings/${id}`);
+      return deleteRequest.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // useEffect(() => {
+  //   deleteFiles();
+  // }, []);
+
+  return <></>;
 }

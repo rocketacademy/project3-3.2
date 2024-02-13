@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Carousel from "./Carousel";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { deleteListing } from "../lib/utilities";
 
 
 
@@ -60,7 +61,7 @@ const imgArr = images.map(image=> image.url)
                       <li>
                         <a>Reserved</a>
                       </li>
-                      <li>
+                      <li onClick={()=>deleteListing(id)}>
                         <a>Delete</a>
                       </li>
                     </>
