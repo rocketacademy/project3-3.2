@@ -17,8 +17,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   getDownloadURL,
   uploadBytes,
@@ -32,6 +33,8 @@ import { BASE_URL } from "./Constants";
 export default function NavBar({ userId }) {
   const queryClient = useQueryClient();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth0();
   const [value, setValue] = useState(0);
   const [open, setOpen] = useState(false);
   const {
@@ -52,13 +55,22 @@ export default function NavBar({ userId }) {
     }
   }, [location.pathname]);
 
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/");
+  //   }
+  // }, [isAuthenticated, navigate]);
+
   const fetcher = async (url) => (await axios.get(url)).data;
   const watches = useQuery({
     queryKey: ["watches", `${BASE_URL}/watches`],
     queryFn: () => fetcher(`${BASE_URL}/watches`),
   });
 
-  const postRequest = async (url, data) => await axios.post(url, data);
+  const postRequest = async (url, data) => {
+    const res = await axios.post(url, data);
+    navigate(`/listings/${res.data.id}`);
+  };
   const { mutate } = useMutation({
     mutationFn: (formData) => postRequest(`${BASE_URL}/listings`, formData),
     onSuccess: () =>
@@ -248,6 +260,7 @@ export default function NavBar({ userId }) {
               name="imageLink"
               control={control}
               defaultValue={null}
+              rules={{ required: "Upload an image" }}
               render={({ field }) => (
                 <Button
                   component="label"

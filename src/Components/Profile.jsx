@@ -67,7 +67,9 @@ export default function ProfileLogin({ userId, setUserId }) {
               />
             )}
           />
-          <Button variant="contained">Submit</Button>
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
         </form>
       ) : (
         <>
