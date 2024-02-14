@@ -1,12 +1,45 @@
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import {
+  getDownloadURL,
+  uploadBytes,
+  ref as storageRef,
+} from "firebase/storage";
+import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { storage } from "./FirebaseConfig";
+import { BASE_URL } from "./Constants";
 
-export default function NavBar() {
+export default function NavBar({ userId }) {
+  const queryClient = useQueryClient();
   const location = useLocation();
   const [value, setValue] = useState(0);
+  const [open, setOpen] = useState(false);
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+    reset,
+  } = useForm();
 
   useEffect(() => {
     switch (location.pathname) {
@@ -19,7 +52,230 @@ export default function NavBar() {
     }
   }, [location.pathname]);
 
-  //Add dialog popup for sell items which will spawn a form to add a listing
+  const fetcher = async (url) => (await axios.get(url)).data;
+  const watches = useQuery({
+    queryKey: ["watches", `${BASE_URL}/watches`],
+    queryFn: () => fetcher(`${BASE_URL}/watches`),
+  });
+
+  const postRequest = async (url, data) => await axios.post(url, data);
+  const { mutate } = useMutation({
+    mutationFn: (formData) => postRequest(`${BASE_URL}/listings`, formData),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["listings", `${BASE_URL}/listings`],
+      }),
+  });
+
+  const onSubmit = async (formData) => {
+    let url = "";
+    if (formData.imageLink) {
+      const newStorageRef = storageRef(
+        storage,
+        `listing/${formData.imageLink.name}`
+      );
+      await uploadBytes(newStorageRef, formData.imageLink);
+      url = await getDownloadURL(newStorageRef);
+      mutate({
+        ...formData,
+        imageLink: url,
+        userId: userId,
+        endingAt: formData.endingAt.$d,
+      });
+    }
+    reset();
+    setOpen(false);
+    console.log({
+      ...formData,
+      imageLink: url,
+      userId: userId,
+      endingAt: formData.endingAt.$d,
+    });
+  };
+
+  const ListFormDialog = () => (
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>List Item!</DialogTitle>
+      <DialogContent>
+        <form>
+          <div>
+            <Controller
+              name="title"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Enter Title" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="title"
+                  label="Title"
+                  variant="filled"
+                  error={!!errors.title}
+                  helperText={errors?.title?.message}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              name="description"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Enter Description" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="description"
+                  label="Description"
+                  variant="filled"
+                  multiline
+                  rows={4}
+                  error={!!errors.description}
+                  helperText={errors?.description?.message}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              name="startingBid"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Enter Starting Bid",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: "Please enter only numbers",
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="startingBid"
+                  label="Starting Bid"
+                  variant="filled"
+                  error={!!errors.startingBid}
+                  helperText={errors?.startingBid?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                    inputProps: { min: 0 },
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              name="buyoutPrice"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Enter Buyout Price",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: "Please enter only numbers",
+                },
+                validate: {
+                  higherThanStartingBid: (value, { startingBid }) =>
+                    Number(value) >= Number(startingBid) ||
+                    "Buyout Price must be higher than or equal to Starting Bid",
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="buyoutPrice"
+                  label="Buyout Price"
+                  variant="filled"
+                  error={!!errors.buyoutPrice}
+                  helperText={errors?.buyoutPrice?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                    inputProps: { min: 0 },
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <FormControl
+              variant="filled"
+              sx={{ m: 1, minWidth: 220 }}
+              error={!!errors.watchId}>
+              <InputLabel>Watch</InputLabel>
+              <Controller
+                name="watchId"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Select a Watch" }}
+                render={({ field }) => (
+                  <Select {...field} id="watchId" defaultValue="">
+                    {watches.data?.map((watch) => (
+                      <MenuItem key={watch.id} value={watch.id}>
+                        {watch.model}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+              <FormHelperText>{errors?.watchId?.message}</FormHelperText>
+            </FormControl>
+          </div>
+          <div>
+            <Controller
+              name="endingAt"
+              control={control}
+              defaultValue=""
+              rules={{ required: "Enter Date" }}
+              render={({ field }) => (
+                <DateTimeField
+                  {...field}
+                  id="endingAt"
+                  label="Ending Date"
+                  format="D/M/YYYY hh:mm a"
+                  error={!!errors.endingAt}
+                  helperText={errors?.endingAt?.message}
+                />
+              )}
+            />
+          </div>
+          <p>
+            <Controller
+              name="imageLink"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => (
+                <Button
+                  component="label"
+                  endIcon={
+                    <iconify-icon icon="ant-design:cloud-upload-outlined" />
+                  }>
+                  Upload Image
+                  <input
+                    style={{ display: "none" }}
+                    type="file"
+                    onChange={(e) => field.onChange(e.target.files[0])}
+                  />
+                </Button>
+              )}
+            />
+          </p>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          endIcon={<iconify-icon icon="ant-design:send-outlined" />}>
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <>
@@ -47,6 +303,7 @@ export default function NavBar() {
           <BottomNavigationAction
             sx={{ "*": { color: "#24305E" } }}
             label="Sell"
+            onClick={() => setOpen(true)}
             icon={<iconify-icon icon="ant-design:plus-circle-twotone" />}
           />
           <BottomNavigationAction
@@ -58,6 +315,9 @@ export default function NavBar() {
           />
         </BottomNavigation>
       </Box>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ListFormDialog />
+      </LocalizationProvider>
     </>
   );
 }

@@ -24,7 +24,7 @@ export default function App() {
         <>
           <Outlet />
           <Listings userId={userId} />
-          <NavBar />
+          <NavBar userId={userId} />
         </>
       ),
       children: [
@@ -43,7 +43,7 @@ export default function App() {
       element: (
         <>
           <ProfileLogin userId={userId} setUserId={setUserId} />
-          <NavBar />
+          <NavBar userId={userId} />
         </>
       ),
     },
