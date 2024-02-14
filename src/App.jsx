@@ -1,6 +1,7 @@
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { useState } from "react";
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./App.css";
 import ProfileLogin from "./Components/Profile";
 import NavBar from "./Components/NavBar";
@@ -51,9 +52,17 @@ export default function App() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <Auth0Provider
+        domain={import.meta.env.VITE_DOMAIN}
+        clientId={import.meta.env.VITE_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          audience: import.meta.env.VITE_AUDIENCE,
+        }}>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </Auth0Provider>
     </>
   );
 }

@@ -12,16 +12,18 @@ export default function SingleListing() {
     queryFn: () => fetcher(`${BASE_URL}/listings/${params.listingId}`),
   });
   const watch = useQuery({
-    queryKey: ["watch", `${BASE_URL}/watches/${listing.watch_id}`],
-    queryFn: () => fetcher(`${BASE_URL}/watches${listing.watch_id}`),
+    queryKey: ["watch", `${BASE_URL}/watches/${listing?.data?.watch_id}`],
+    queryFn: () => fetcher(`${BASE_URL}/watches/${listing?.data?.watch_id}`),
+    enabled: listing.isSuccess,
   });
   const priceHistory = useQuery({
     queryKey: [
       "priceHistory",
-      `${BASE_URL}/watches/${listing.watch_id}/historicPrices`,
+      `${BASE_URL}/watches/${listing?.data?.watch_id}/historicPrices`,
     ],
     queryFn: () =>
-      fetcher(`${BASE_URL}/watches/${listing.watch_id}/historicPrices`),
+      fetcher(`${BASE_URL}/watches/${listing?.data?.watch_id}/historicPrices`),
+    enabled: listing.isSuccess,
   });
 
   if (listing.isLoading) {
