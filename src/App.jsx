@@ -1,18 +1,35 @@
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { useState } from "react";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
 import "./App.css";
-import ProfileLogin from "./Components/Profile";
+import Profile from "./Components/Profile";
 import NavBar from "./Components/NavBar";
 import Login from "./Components/Login";
 import Listings from "./Components/Listings";
 import SingleListing from "./Components/SingleListing";
 
-const queryClient = new QueryClient();
-
 export default function App() {
   const [userId, setUserId] = useState("");
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+
+  const { data: accessToken } = useQuery({
+    queryKey: ["accessToken"],
+    queryFn: async () =>
+      await getAccessTokenSilently({
+        authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
+      }),
+    enabled: isAuthenticated,
+  });
+
+  useEffect(() => {
+    console.log(accessToken);
+  }, [accessToken]);
+
+  const axiosAuth = axios.create({
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 
   const router = createBrowserRouter([
     {
@@ -24,8 +41,8 @@ export default function App() {
       element: (
         <>
           <Outlet />
-          <Listings userId={userId} />
-          <NavBar userId={userId} />
+          <Listings userId={userId} axiosAuth={axiosAuth} />
+          <NavBar userId={userId} axiosAuth={axiosAuth} />
         </>
       ),
       children: [
@@ -33,7 +50,7 @@ export default function App() {
           path: ":listingId",
           element: (
             <>
-              <SingleListing userId={userId} />
+              <SingleListing userId={userId} axiosAuth={axiosAuth} />
             </>
           ),
         },
@@ -43,8 +60,12 @@ export default function App() {
       path: "/profile",
       element: (
         <>
-          <ProfileLogin userId={userId} setUserId={setUserId} />
-          <NavBar userId={userId} />
+          <Profile
+            userId={userId}
+            setUserId={setUserId}
+            axiosAuth={axiosAuth}
+          />
+          <NavBar userId={userId} axiosAuth={axiosAuth} />
         </>
       ),
     },
@@ -52,18 +73,7 @@ export default function App() {
 
   return (
     <>
-      <Auth0Provider
-        domain={import.meta.env.VITE_DOMAIN}
-        clientId={import.meta.env.VITE_CLIENT_ID}
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-          audience: import.meta.env.VITE_AUDIENCE,
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </Auth0Provider>
+      <RouterProvider router={router} />
     </>
   );
 }

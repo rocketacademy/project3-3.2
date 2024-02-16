@@ -3,14 +3,13 @@ import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { BASE_URL, SOCKET_URL } from "./Constants";
 import { LineChart } from "@mui/x-charts/LineChart";
 
-export default function SingleListing({ userId }) {
+export default function SingleListing({ userId, axiosAuth }) {
   const [displayBid, setDisplayBid] = useState(0);
   const queryClient = useQueryClient();
   const params = useParams();
@@ -21,7 +20,7 @@ export default function SingleListing({ userId }) {
     reset,
   } = useForm();
 
-  const fetcher = async (url) => (await axios.get(url)).data;
+  const fetcher = async (url) => (await axiosAuth.get(url)).data;
   const listing = useQuery({
     queryKey: ["listing", `${BASE_URL}/listings/${params.listingId}`],
     queryFn: () => fetcher(`${BASE_URL}/listings/${params.listingId}`),
@@ -50,7 +49,7 @@ export default function SingleListing({ userId }) {
   const prices = priceHistory?.data?.map((item) => item.price);
   const dates = priceHistory?.data?.map((item) => new Date(item.transacted_at));
 
-  const putRequest = async (url, data) => await axios.put(url, data);
+  const putRequest = async (url, data) => await axiosAuth.put(url, data);
   const { mutate } = useMutation({
     mutationFn: (formData) =>
       putRequest(`${BASE_URL}/listings/${params.listingId}/bid`, formData),
@@ -221,6 +220,7 @@ const Countdown = ({ endDate }) => {
     <>
       <p>Auction Ends In</p>
       <p>
+        <iconify-icon inline icon="ant-design:reload-time-outline" />{" "}
         {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes}
         minutes, {timeLeft.seconds} seconds
       </p>
