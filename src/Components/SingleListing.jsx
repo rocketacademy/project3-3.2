@@ -12,7 +12,6 @@ import { LineChart } from "@mui/x-charts/LineChart";
 
 export default function SingleListing({ userId }) {
   const [displayBid, setDisplayBid] = useState(0);
-  const socket = io(`${SOCKET_URL}`);
   const queryClient = useQueryClient();
   const params = useParams();
   const {
@@ -48,6 +47,8 @@ export default function SingleListing({ userId }) {
 
   const initialBid =
     highestBid?.data?.current_bid ?? listing?.data?.starting_bid;
+  const prices = priceHistory?.data?.map((item) => item.price);
+  const dates = priceHistory?.data?.map((item) => new Date(item.transacted_at));
 
   const putRequest = async (url, data) => await axios.put(url, data);
   const { mutate } = useMutation({
@@ -62,6 +63,14 @@ export default function SingleListing({ userId }) {
       }),
   });
 
+  const socket = io(`${SOCKET_URL}`);
+
+  useEffect(() => {
+    socket.emit("joinRoom", params.listingId);
+    socket.on("newBid", (bid) => setDisplayBid(bid));
+    return () => socket.disconnect();
+  }, [params.listingId, socket]);
+
   const onSubmit = (formData) => {
     const submitData = { ...formData, userId, listingId: params.listingId };
     console.log(submitData);
@@ -70,21 +79,105 @@ export default function SingleListing({ userId }) {
     reset();
   };
 
-  useEffect(() => {
-    socket.emit("joinRoom", params.listingId);
-    socket.on("newBid", (bid) => setDisplayBid(bid));
-    return () => socket.disconnect();
-  }, [params.listingId, queryClient, socket]);
+  const endDate = listing?.data?.ending_at;
 
-  const endDate = listing.data.ending_at;
-  console.log(endDate);
+  if (listing.isLoading) {
+    return (
+      <>
+        Loading... <iconify-icon icon="line-md:loading-twotone-loop" />
+      </>
+    );
+  }
+
+  if (listing.isError) {
+    return <>Error: {listing.error.message}</>;
+  }
+
+  return (
+    <>
+      <div className="product-info">
+        <img src={listing.data.image_link} width="400px" alt="Listing" />
+        <h1>{listing.data.title}</h1>
+      </div>
+      <div className="auction-info">
+        <p>Current Bid: ${displayBid || initialBid}</p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <Controller
+              name="currentBid"
+              control={control}
+              defaultValue={(displayBid || initialBid) + 100}
+              rules={{
+                required: "Enter Bid",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: "Please enter only numbers",
+                },
+                validate: {
+                  higherThanCurrentBid: (value) =>
+                    Number(value) >= Number(displayBid || initialBid) + 100 ||
+                    "Enter an amount at least $100 higher than current bid",
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="currentBid"
+                  label="Bid"
+                  variant="filled"
+                  error={!!errors.currentBid}
+                  helperText={errors?.currentBid?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
+                    inputProps: { min: 0 },
+                  }}
+                />
+              )}
+            />
+          </div>
+          <Button type="submit" variant="contained">
+            BID NOW
+          </Button>
+        </form>
+        <Button variant="contained">BUYOUT</Button>
+        <Countdown endDate={endDate} />
+      </div>
+      <div className="line-chart">
+        {!!priceHistory.data && (
+          <LineChart
+            xAxis={[
+              {
+                data: dates,
+                scaleType: "time",
+                valueFormatter: (value) =>
+                  `${value.getFullYear()}-${
+                    value.getMonth() + 1
+                  }-${value.getDate()}`,
+              },
+            ]}
+            series={[
+              {
+                data: prices,
+              },
+            ]}
+            width={320}
+            height={270}
+          />
+        )}
+      </div>
+    </>
+  );
+}
+
+const Countdown = ({ endDate }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: "0",
     hours: "00",
     minutes: "00",
     seconds: "00",
   });
-
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -124,106 +217,13 @@ export default function SingleListing({ userId }) {
     return () => clearInterval(intervalId);
   }, [endDate]);
 
-  const prices = priceHistory?.data?.map((item) => item.price);
-  const dates = priceHistory?.data?.map((item) => new Date(item.transacted_at));
-
-  if (listing?.isLoading) {
-    return (
-      <>
-        Loading... <iconify-icon icon="line-md:loading-twotone-loop" />
-      </>
-    );
-  }
-
-  if (listing.isError) {
-    return <>Error: {listing.error.message}</>;
-  }
-
-  //Show price history with MUI X Line Chart
-  //Show listing information
-
   return (
     <>
-      <div>Current Bid: {displayBid || initialBid}</div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <Controller
-            name="currentBid"
-            control={control}
-            defaultValue={(displayBid || initialBid) + 100}
-            rules={{
-              required: "Enter Bid",
-              pattern: {
-                value: /^[0-9]+$/,
-                message: "Please enter only numbers",
-              },
-              validate: {
-                higherThanCurrentBid: (value) =>
-                  Number(value) >= Number(displayBid || initialBid) + 100 ||
-                  "Enter an amount at least $100 higher than current bid",
-              },
-            }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                id="currentBid"
-                label="Bid"
-                variant="filled"
-                error={!!errors.currentBid}
-                helperText={errors?.currentBid?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  ),
-                  inputProps: { min: 0 },
-                }}
-              />
-            )}
-          />
-        </div>
-        <Button type="submit" variant="contained">
-          Submit Bid
-        </Button>
-      </form>
-      <div className="product-info">
-        {/* <img src={listing.data?.image_link} alt="Listing" /> */}
-        {listing.data.title}
-      </div>
-      <div className="auction-info">
-        <p>@PhyllisP made a bid of</p>
-        <p>$150,000</p>
-        <p>25 seconds ago</p>
-        <Button variant="contained">BID NOW</Button>
-        <Button variant="contained">BUYOUT</Button>
-        <p>Auction Ends In</p>
-        <p>
-          {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes}{" "}
-          minutes, {timeLeft.seconds} seconds
-        </p>
-      </div>
-      <div className="line-chart">
-        {!!priceHistory.data && (
-          <LineChart
-            xAxis={[
-              {
-                data: dates,
-                scaleType: "time",
-                valueFormatter: (value) =>
-                  `${value.getFullYear()}-${
-                    value.getMonth() + 1
-                  }-${value.getDate()}`,
-              },
-            ]}
-            series={[
-              {
-                data: prices,
-              },
-            ]}
-            width={320}
-            height={270}
-          />
-        )}
-      </div>
+      <p>Auction Ends In</p>
+      <p>
+        {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes}
+        minutes, {timeLeft.seconds} seconds
+      </p>
     </>
   );
-}
+};
