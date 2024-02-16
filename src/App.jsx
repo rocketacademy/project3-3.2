@@ -24,18 +24,11 @@ export default function App() {
       element: (
         <>
           <Outlet />
+          <Listings userId={userId} />
           <NavBar userId={userId} />
         </>
       ),
       children: [
-        {
-          index: true,
-          element: (
-            <>
-              <Listings userId={userId} />
-            </>
-          ),
-        },
         {
           path: ":listingId",
           element: (

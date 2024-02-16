@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { BASE_URL } from "./Constants";
 import Button from "@mui/material/Button";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { useState, useEffect } from "react";
 
 export default function SingleListing() {
   const params = useParams();
@@ -28,7 +29,53 @@ export default function SingleListing() {
     enabled: listing.isSuccess,
   });
 
-  console.log(priceHistory.data);
+  const endDate = listing.data.ending_at;
+  console.log(endDate);
+  const [timeLeft, setTimeLeft] = useState({
+    days: "0",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+  });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const end = new Date(endDate).getTime();
+      const timeDifference = end - now;
+
+      if (timeDifference > 0) {
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+        setTimeLeft({
+          days: days.toString(),
+          hours: hours.toString().padStart(2, "0"),
+          minutes: minutes.toString().padStart(2, "0"),
+          seconds: seconds.toString().padStart(2, "0"),
+        });
+      } else {
+        setTimeLeft({
+          days: "0",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+        });
+      }
+    };
+
+    updateCountdown();
+
+    const intervalId = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [endDate]);
 
   if (listing?.isLoading) {
     return (
@@ -44,19 +91,9 @@ export default function SingleListing() {
 
   //Show price history with MUI X Line Chart
   //Show listing information
-  priceHistory?.data?.sort(
-    (a, b) => new Date(a.transacted_at) - new Date(b.transacted_at)
-  );
-  // const pairs = priceHistory?.data?.map((item) => ({
-  //   price: item.price,
-  //   transactedAtDate: item.transacted_at.split("T")[0],
-  // }));
-  // console.log(pairs);
 
-  const prices = priceHistory?.data?.map((item) => item.price).reverse();
-  const dates = priceHistory?.data
-    ?.map((item) => new Date(item.transacted_at))
-    .reverse();
+  const prices = priceHistory?.data?.map((item) => item.price);
+  const dates = priceHistory?.data?.map((item) => new Date(item.transacted_at));
   console.log(prices);
   console.log(dates);
 
@@ -73,7 +110,10 @@ export default function SingleListing() {
         <Button variant="contained">BID NOW</Button>
         <Button variant="contained">BUYOUT</Button>
         <p>Auction Ends In</p>
-        <p>04 Days 11 Hours 16 Minutes</p>
+        <p>
+          {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes}{" "}
+          minutes, {timeLeft.seconds} seconds
+        </p>
       </div>
       <div className="line-chart">
         {!!priceHistory.data && (
@@ -93,7 +133,7 @@ export default function SingleListing() {
                 data: prices,
               },
             ]}
-            width={350}
+            width={320}
             height={270}
           />
         )}

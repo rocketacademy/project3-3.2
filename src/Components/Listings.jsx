@@ -72,16 +72,14 @@ export default function Listings({ userId }) {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    "& .MuiTypography-root": {
+                    "& h1": {
                       textAlign: "center",
                       fontSize: index % 3 !== 0 ? "0.75rem" : "1.25rem",
                     },
                   }}
                 >
-                  <Typography variant="body1">Auction Time Left:</Typography>
-                  <Typography variant="body1">
-                    04 Days 11 Hours 16 Minutes
-                  </Typography>
+                  <h1>Auction Time Left:</h1>
+                  <h1>04 Days 11 Hours 16 Minutes</h1>
                 </Box>
 
                 <CardMedia
@@ -96,16 +94,14 @@ export default function Listings({ userId }) {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    "& .MuiTypography-root": {
+                    "& h2": {
                       textAlign: "center",
                       fontSize: index % 3 !== 0 ? "0.75rem" : "1rem",
                     },
                   }}
                 >
-                  <Typography variant="body2">{listing.title}</Typography>
-                  <Typography variant="body2">
-                    Starting at {listing.starting_bid}
-                  </Typography>
+                  <h2>{listing.title}</h2>
+                  <h2>Starting at {listing.starting_bid}</h2>
                 </CardContent>
               </Card>
             </Link>
