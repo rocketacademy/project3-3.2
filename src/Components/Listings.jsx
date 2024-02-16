@@ -6,7 +6,6 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 export default function Listings({ userId }) {
@@ -48,8 +47,6 @@ export default function Listings({ userId }) {
 
   //Add useEffect for MUI Snackbar for notifying liked watches when listed after socket.io is set up (Low priority)
   const cardColors = ["#A8D0E6", "#374785", "#f76c6c", "#d4b483", "#24305E"];
-  console.log(listings.data);
-  console.log(listings);
 
   return (
     <>
@@ -65,8 +62,7 @@ export default function Listings({ userId }) {
                     borderRadius: 0,
                     alignItems: "center",
                   },
-                }}
-              >
+                }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -76,8 +72,7 @@ export default function Listings({ userId }) {
                       textAlign: "center",
                       fontSize: index % 3 !== 0 ? "0.75rem" : "1.25rem",
                     },
-                  }}
-                >
+                  }}>
                   <h1>Auction Time Left:</h1>
                   <h1>04 Days 11 Hours 16 Minutes</h1>
                 </Box>
@@ -86,8 +81,11 @@ export default function Listings({ userId }) {
                   component="img"
                   image={listing.image_link}
                   alt={listing.title}
-                  sx={{ width: "60%", display: "block", objectFit: "cover" }}
-                ></CardMedia>
+                  sx={{
+                    width: "60%",
+                    display: "block",
+                    objectFit: "cover",
+                  }}></CardMedia>
 
                 <CardContent
                   sx={{
@@ -98,8 +96,7 @@ export default function Listings({ userId }) {
                       textAlign: "center",
                       fontSize: index % 3 !== 0 ? "0.75rem" : "1rem",
                     },
-                  }}
-                >
+                  }}>
                   <h2>{listing.title}</h2>
                   <h2>Starting at {listing.starting_bid}</h2>
                 </CardContent>
