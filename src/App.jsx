@@ -58,7 +58,8 @@ export default function App() {
         authorizationParams={{
           redirect_uri: window.location.origin,
           audience: import.meta.env.VITE_AUDIENCE,
-        }}>
+        }}
+      >
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
         </QueryClientProvider>
