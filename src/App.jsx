@@ -33,7 +33,7 @@ export default function App() {
           path: ":listingId",
           element: (
             <>
-              <SingleListing />
+              <SingleListing userId={userId} />
             </>
           ),
         },
