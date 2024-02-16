@@ -40,8 +40,6 @@ export default function Listings({ userId }) {
       }),
   });
 
-  //List out listings in the map function with listing.title, listing.starting_bid, listing.buyout_price, listing.watch.brand, listing.watch.model, and the image with listing.image_link, and a countdown to listing.ending_at. Use MUI Components and MUI Layout to help. (High priority)
-
   //Use MUI Select Checkmarks and React Hook Forms to make a dropdown of watches to like and unlike (Low priority)
 
   //Add functionality to filter by liked watches (Low Priority)
@@ -96,12 +94,19 @@ export default function Listings({ userId }) {
                     alignItems: "center",
                     "& h2": {
                       textAlign: "center",
-                      fontSize: index % 3 !== 0 ? "0.75rem" : "1rem",
                     },
                   }}
                 >
-                  <h2>{listing.title}</h2>
-                  <h2>Starting at {listing.starting_bid}</h2>
+                  <h2
+                    style={{ fontSize: index % 3 !== 0 ? "0.75rem" : "1rem" }}
+                  >
+                    {listing.title}
+                  </h2>
+                  <h2
+                    style={{ fontSize: index % 3 !== 0 ? "0.75rem" : "1rem" }}
+                  >
+                    Starting at {listing.starting_bid}
+                  </h2>
                 </CardContent>
               </Card>
             </Link>

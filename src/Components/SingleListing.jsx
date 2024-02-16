@@ -77,7 +77,7 @@ export default function SingleListing() {
     return () => clearInterval(intervalId);
   }, [endDate]);
 
-  if (listing?.isLoading) {
+  if (listing.isLoading) {
     return (
       <>
         Loading... <iconify-icon icon="line-md:loading-twotone-loop" />
@@ -85,12 +85,9 @@ export default function SingleListing() {
     );
   }
 
-  if (listing?.isError) {
+  if (listing.isError) {
     return <>Error: {listing.error.message}</>;
   }
-
-  //Show price history with MUI X Line Chart
-  //Show listing information
 
   const prices = priceHistory?.data?.map((item) => item.price);
   const dates = priceHistory?.data?.map((item) => new Date(item.transacted_at));

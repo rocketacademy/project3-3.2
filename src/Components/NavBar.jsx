@@ -217,7 +217,8 @@ export default function NavBar({ userId }) {
             <FormControl
               variant="filled"
               sx={{ m: 1, minWidth: 220 }}
-              error={!!errors.watchId}>
+              error={!!errors.watchId}
+            >
               <InputLabel>Watch</InputLabel>
               <Controller
                 name="watchId"
@@ -266,7 +267,8 @@ export default function NavBar({ userId }) {
                   component="label"
                   endIcon={
                     <iconify-icon icon="ant-design:cloud-upload-outlined" />
-                  }>
+                  }
+                >
                   Upload Image
                   <input
                     style={{ display: "none" }}
@@ -283,7 +285,8 @@ export default function NavBar({ userId }) {
         <Button onClick={() => setOpen(false)}>Cancel</Button>
         <Button
           onClick={handleSubmit(onSubmit)}
-          endIcon={<iconify-icon icon="ant-design:send-outlined" />}>
+          endIcon={<iconify-icon icon="ant-design:send-outlined" />}
+        >
           Submit
         </Button>
       </DialogActions>
@@ -298,14 +301,16 @@ export default function NavBar({ userId }) {
           bottom: 0,
           left: 0,
           right: 0,
-        }}>
+        }}
+      >
         <BottomNavigation
           sx={{ bgcolor: "#A8D0E6" }}
           showLabels
           value={value}
           onChange={(e, newValue) =>
             newValue !== 1 ? setValue(newValue) : null
-          }>
+          }
+        >
           <BottomNavigationAction
             sx={{ "*": { color: value === 0 ? "#f76c6c" : "#24305E" } }}
             component={Link}
