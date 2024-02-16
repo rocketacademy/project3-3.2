@@ -19,22 +19,19 @@ import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { useAuth0 } from "@auth0/auth0-react";
 import {
   getDownloadURL,
   uploadBytes,
   ref as storageRef,
 } from "firebase/storage";
-import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { storage } from "./FirebaseConfig";
 import { BASE_URL } from "./Constants";
 
-export default function NavBar({ userId }) {
+export default function NavBar({ userId, axiosAuth }) {
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth0();
   const [value, setValue] = useState(0);
   const [open, setOpen] = useState(false);
   const {
@@ -55,20 +52,14 @@ export default function NavBar({ userId }) {
     }
   }, [location.pathname]);
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated, navigate]);
-
-  const fetcher = async (url) => (await axios.get(url)).data;
+  const fetcher = async (url) => (await axiosAuth.get(url)).data;
   const watches = useQuery({
     queryKey: ["watches", `${BASE_URL}/watches`],
     queryFn: () => fetcher(`${BASE_URL}/watches`),
   });
 
   const postRequest = async (url, data) => {
-    const res = await axios.post(url, data);
+    const res = await axiosAuth.post(url, data);
     navigate(`/listings/${res.data.id}`);
   };
   const { mutate } = useMutation({
@@ -107,8 +98,8 @@ export default function NavBar({ userId }) {
 
   const ListFormDialog = () => (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogTitle>List Item!</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{ bgcolor: "#ebecf0" }}>List Item!</DialogTitle>
+      <DialogContent sx={{ bgcolor: "#ebecf0" }}>
         <form>
           <div>
             <Controller
@@ -119,11 +110,13 @@ export default function NavBar({ userId }) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  sx={{ m: 1, minWidth: 250 }}
                   id="title"
                   label="Title"
                   variant="filled"
                   error={!!errors.title}
                   helperText={errors?.title?.message}
+                  margin="normal"
                 />
               )}
             />
@@ -137,6 +130,7 @@ export default function NavBar({ userId }) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  sx={{ m: 1, minWidth: 250 }}
                   id="description"
                   label="Description"
                   variant="filled"
@@ -144,6 +138,7 @@ export default function NavBar({ userId }) {
                   rows={4}
                   error={!!errors.description}
                   helperText={errors?.description?.message}
+                  margin="normal"
                 />
               )}
             />
@@ -163,11 +158,13 @@ export default function NavBar({ userId }) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  sx={{ m: 1, minWidth: 250 }}
                   id="startingBid"
                   label="Starting Bid"
                   variant="filled"
                   error={!!errors.startingBid}
                   helperText={errors?.startingBid?.message}
+                  margin="normal"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">$</InputAdornment>
@@ -198,11 +195,13 @@ export default function NavBar({ userId }) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  sx={{ m: 1, minWidth: 250 }}
                   id="buyoutPrice"
                   label="Buyout Price"
                   variant="filled"
                   error={!!errors.buyoutPrice}
                   helperText={errors?.buyoutPrice?.message}
+                  margin="normal"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">$</InputAdornment>
@@ -216,7 +215,7 @@ export default function NavBar({ userId }) {
           <div>
             <FormControl
               variant="filled"
-              sx={{ m: 1, minWidth: 220 }}
+              sx={{ m: 1, minWidth: 250 }}
               error={!!errors.watchId}>
               <InputLabel>Watch</InputLabel>
               <Controller
@@ -225,7 +224,7 @@ export default function NavBar({ userId }) {
                 defaultValue=""
                 rules={{ required: "Select a Watch" }}
                 render={({ field }) => (
-                  <Select {...field} id="watchId" defaultValue="">
+                  <Select {...field} autoWidth id="watchId" defaultValue="">
                     {watches.data?.map((watch) => (
                       <MenuItem key={watch.id} value={watch.id}>
                         {watch.model}
@@ -246,6 +245,7 @@ export default function NavBar({ userId }) {
               render={({ field }) => (
                 <DateTimeField
                   {...field}
+                  sx={{ m: 1, minWidth: 250 }}
                   id="endingAt"
                   label="Ending Date"
                   format="D/M/YYYY hh:mm a"
@@ -279,7 +279,7 @@ export default function NavBar({ userId }) {
           </p>
         </form>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ bgcolor: "#ebecf0" }}>
         <Button onClick={() => setOpen(false)}>Cancel</Button>
         <Button
           onClick={handleSubmit(onSubmit)}
@@ -300,7 +300,7 @@ export default function NavBar({ userId }) {
           right: 0,
         }}>
         <BottomNavigation
-          sx={{ bgcolor: "#A8D0E6" }}
+          sx={{ bgcolor: "#7BD3EA" }}
           showLabels
           value={value}
           onChange={(e, newValue) =>

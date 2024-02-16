@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { BASE_URL } from "./Constants";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -8,10 +7,10 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 
-export default function Listings({ userId }) {
+export default function Listings({ userId, axiosAuth }) {
   const queryClient = useQueryClient();
 
-  const fetcher = async (url) => (await axios.get(url)).data;
+  const fetcher = async (url) => (await axiosAuth.get(url)).data;
   //Retrieve all the listings
   const listings = useQuery({
     queryKey: ["listings", `${BASE_URL}/listings`],
@@ -28,7 +27,7 @@ export default function Listings({ userId }) {
     queryFn: () => fetcher(`${BASE_URL}/users/${userId}/wishlist`),
   });
 
-  const putRequest = async (url, data) => await axios.put(url, data);
+  const putRequest = async (url, data) => await axiosAuth.put(url, data);
   //Updates the watches in user wishlist
   const { mutate } = useMutation({
     mutationFn: (formData) =>
