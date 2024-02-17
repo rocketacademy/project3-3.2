@@ -304,7 +304,7 @@ export default function NavBar({ userId, axiosAuth }) {
         }}
       >
         <BottomNavigation
-          sx={{ bgcolor: "#7BD3EA" }}
+          sx={{ bgcolor: "#e2dfdf" }}
           showLabels
           value={value}
           onChange={(e, newValue) =>
