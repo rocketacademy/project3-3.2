@@ -9,7 +9,7 @@ import Profile from "./Components/Profile";
 import Search from "./Components/Search";
 import NavBar from "./Components/NavBar";
 import SellerProfile from "./Components/SellerProfile";
-import axios from "axios";
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -32,7 +32,7 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute>
-          <Home axios={axios} />
+          <Home />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -41,7 +41,7 @@ function App() {
       path: "/favorites",
       element: (
         <ProtectedRoute>
-          <Favorites axios={axios} />
+          <Favorites />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -50,26 +50,34 @@ function App() {
       path: "/search",
       element: (
         <ProtectedRoute>
-          <Search axios={axios} />
+          <Search />
           <NavBar />
         </ProtectedRoute>
       ),
-      children: [
-        {
-          path: ":basketId",
-          element: <FoodDetail axios={axios} />,
-        },
-        {
-          path: ":sellerId",
-          element: <SellerProfile axios={axios} />,
-        },
-      ],
+    },
+    {
+      path: "/search/basket/:basketId",
+      element: (
+        <ProtectedRoute>
+          <FoodDetail />
+          <NavBar />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/search/seller/:sellerId",
+      element: (
+        <ProtectedRoute>
+          <SellerProfile />
+          <NavBar />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/cart",
       element: (
         <ProtectedRoute>
-          <Cart axios={axios} />
+          <Cart />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -78,7 +86,7 @@ function App() {
       path: "/order",
       element: (
         <ProtectedRoute>
-          <OrderPlaced axios={axios} />
+          <OrderPlaced />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -87,7 +95,7 @@ function App() {
       path: "/profile",
       element: (
         <ProtectedRoute>
-          <Profile axios={axios} />
+          <Profile />
           <NavBar />
         </ProtectedRoute>
       ),
