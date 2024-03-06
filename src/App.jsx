@@ -8,6 +8,8 @@ import OrderPlaced from "./Components/OrderPlaced";
 import Profile from "./Components/Profile";
 import Search from "./Components/Search";
 import NavBar from "./Components/NavBar";
+import SellerProfile from "./Components/SellerProfile";
+import axios from "axios";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -30,7 +32,7 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute>
-          <Home />
+          <Home axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -39,7 +41,7 @@ function App() {
       path: "/favorites",
       element: (
         <ProtectedRoute>
-          <Favorites />
+          <Favorites axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -48,14 +50,18 @@ function App() {
       path: "/search",
       element: (
         <ProtectedRoute>
-          <Search />
+          <Search axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
       children: [
         {
           path: ":basketId",
-          element: <FoodDetail />,
+          element: <FoodDetail axios={axios} />,
+        },
+        {
+          path: ":sellerId",
+          element: <SellerProfile axios={axios} />,
         },
       ],
     },
@@ -63,7 +69,7 @@ function App() {
       path: "/cart",
       element: (
         <ProtectedRoute>
-          <Cart />
+          <Cart axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -72,7 +78,7 @@ function App() {
       path: "/order",
       element: (
         <ProtectedRoute>
-          <OrderPlaced />
+          <OrderPlaced axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -81,7 +87,7 @@ function App() {
       path: "/profile",
       element: (
         <ProtectedRoute>
-          <Profile />
+          <Profile axios={axios} />
           <NavBar />
         </ProtectedRoute>
       ),
