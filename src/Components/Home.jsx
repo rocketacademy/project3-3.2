@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
 
-export default function Home(axios) {
+export default function Home() {
   const fetcher = async (url) => (await axios.get(url)).data;
 
   //retrieve all feeds
@@ -10,4 +10,6 @@ export default function Home(axios) {
     queryKey: ["feeds"],
     queryFn: () => fetcher(`${BASE_URL}/feed`),
   });
+
+  console.log(feeds.data);
 }
