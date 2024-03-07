@@ -11,6 +11,7 @@ export default function Home() {
     queryKey: ["feeds"],
     queryFn: () => fetcher(`${BASE_URL}/feed`),
   });
+<<<<<<< HEAD
   console.log("feeds", feeds, feeds.data);
 
   const [comment, setComment] = useState("");
@@ -72,4 +73,8 @@ export default function Home() {
       ))}
     </div>
   );
+=======
+
+  console.log(feeds.data);
+>>>>>>> main
 }

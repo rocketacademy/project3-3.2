@@ -20,6 +20,9 @@ function App() {
   //will import isAuthenticated from auth0 later
   const isAuthenticated = true;
 
+  //will have a userId once we have auth0
+  const userId = 1;
+
   const ProtectedRoute = ({ children }) => {
     return isAuthenticated ? children : <Navigate to="/login" />;
   };
@@ -59,7 +62,7 @@ function App() {
       path: "/search/basket/:basketId",
       element: (
         <ProtectedRoute>
-          <FoodDetail />
+          <FoodDetail userId={userId} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -77,7 +80,7 @@ function App() {
       path: "/cart",
       element: (
         <ProtectedRoute>
-          <Cart />
+          <Cart userId={userId} />
           <NavBar />
         </ProtectedRoute>
       ),
