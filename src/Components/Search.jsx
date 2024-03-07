@@ -9,16 +9,16 @@ export default function Search() {
 
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  //retrieve all sellers
+  // retrieve all sellers
   const sellers = useQuery({
     queryKey: ["sellers", selectedCategoryId],
     queryFn: () =>
       fetcher(`${BASE_URL}/category/${selectedCategoryId}/sellers`),
     enabled: !!selectedCategoryId,
   });
-  //maybe only show the sellers who have baskets?
+  // maybe only show the sellers who have baskets?
 
-  //change categoryId with button click
+  // change categoryId with button click
   const handleCategoryClick = (categoryId) => {
     setSelectedCategoryId(categoryId);
   };
@@ -33,8 +33,7 @@ export default function Search() {
 
       {sellers?.data?.map((seller) => (
         <div key={seller.id}>
-          <li>{seller.name}</li>
-          <img src={seller.photo} alt={seller.name} />
+          <p>{seller.name}</p>
           <ul>
             {seller.baskets?.map((basket) => (
               <div
@@ -52,6 +51,8 @@ export default function Search() {
                   <h2 className="font-bold text-lg">{basket.title}</h2>
                   <p className="text-gray-500">{basket.price}</p>
                   <p className="text-gray-500">{basket.stock} left</p>
+                  <p className="text-gray-500">${basket.originalPrice}</p>
+                  <p className="text-gray-500">${basket.discountedPrice}</p>
                 </div>
               </div>
             ))}
