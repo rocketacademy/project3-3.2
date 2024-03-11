@@ -33,9 +33,19 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="text-4xl text-center">
-        <p className="">Food</p>
-        <p className="">Rescue</p>
+      <div className="text-4xl flex justify-center">
+        <div>
+          <p className="text-[#E55555] font-bold">Food</p>
+        </div>
+        <div>
+          <p className="text-[#9EB97D] italic">Rescue</p>
+        </div>
+      </div>
+      <div>
+        {/* new page to favorites */}
+        <button className="fixed top-8 right-8 p-2">
+          <img src="favorite.png" alt="favorite" className="h-8 w-8" />
+        </button>
       </div>
       {feeds?.data?.map((feed) => (
         <div
@@ -46,38 +56,34 @@ export default function Home() {
           <p className="text-s mb-2 text-left">{feed.content}</p>
           <p className="text-gray-500 text-sm text-left">{feed.createdAt}</p>
           <br />
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={() => handleLike(feed.id)}
-          >
-            Like
-          </button>
-          {/* render out message when you liked post
-          and how many other users liked this */}
+          <div className="flex justify-start">
+            <button onClick={() => handleLike(feed.id)}>
+              <img src="like.png" alt="like" className="h-10 w-10" />
+            </button>
+          </div>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleComment(feed.id);
             }}
+            className="flex items-center"
           >
             <input
               type="text"
               value={comment}
               onChange={handleInputChange}
               placeholder="Write a comment..."
-              className="border border-gray-300 rounded-md p-2 mt-2 w-full"
+              className="border border-gray-300 rounded-md p-2 mt-2 flex-grow mr-2"
             />
             <button
               type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
+              className="bg-[#F59F50] py-2 px-4 rounded-md flex items-center"
             >
-              Submit
+              <img src="send.png" alt="send" className="h-8 w-8" />
             </button>
           </form>
         </div>
       ))}
     </div>
   );
-
-  console.log(feeds.data);
 }
