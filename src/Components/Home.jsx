@@ -11,7 +11,6 @@ export default function Home() {
     queryKey: ["feeds"],
     queryFn: () => fetcher(`${BASE_URL}/feed`),
   });
-<<<<<<< HEAD
   console.log("feeds", feeds, feeds.data);
 
   const [comment, setComment] = useState("");
@@ -34,9 +33,15 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="text-4xl text-center">
+        <p className="">Food</p>
+        <p className="">Rescue</p>
+      </div>
       {feeds?.data?.map((feed) => (
-        <div key={feed.id} className="bg-white rounded-lg shadow p-4 relative">
-          {/* add user logo and name */}
+        <div
+          key={feed.id}
+          className="bg-[#EFEEDE] rounded-lg shadow p-4 relative"
+        >
           <img src={feed.photo} alt="Feed Photo" className="w-full mb-4" />
           <p className="text-s mb-2 text-left">{feed.content}</p>
           <p className="text-gray-500 text-sm text-left">{feed.createdAt}</p>
@@ -73,8 +78,6 @@ export default function Home() {
       ))}
     </div>
   );
-=======
 
   console.log(feeds.data);
->>>>>>> main
 }
