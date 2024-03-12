@@ -27,7 +27,7 @@ export default function FoodDetail({ userId }) {
         queryKey: ["cart", `${BASE_URL}/cart`],
       });
       queryClient.setQueryData(
-        ["cart", `${BASE_URL}/cart${res.data.buyer_id}`],
+        ["cartItems", `${BASE_URL}/cart/${res.data.buyer_id}`],
         res.data
       );
       navigate(`/cart`);
@@ -35,9 +35,10 @@ export default function FoodDetail({ userId }) {
   });
 
   const handleAddToCart = () => {
+    console.log(params.basketId);
     const formData = {
-      buyer_id: userId,
-      basket_id: params.basketId,
+      buyerId: userId,
+      basketId: Number(params.basketId),
       stock: 1,
     };
     mutate(formData);
