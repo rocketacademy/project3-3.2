@@ -9,16 +9,16 @@ export default function Search() {
 
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  //retrieve all sellers
+  // retrieve all sellers
   const sellers = useQuery({
     queryKey: ["sellers", selectedCategoryId],
     queryFn: () =>
       fetcher(`${BASE_URL}/category/${selectedCategoryId}/sellers`),
     enabled: !!selectedCategoryId,
   });
-  //maybe only show the sellers who have baskets?
+  // maybe only show the sellers who have baskets?
 
-  //change categoryId with button click
+  // change categoryId with button click
   const handleCategoryClick = (categoryId) => {
     setSelectedCategoryId(categoryId);
   };
@@ -27,19 +27,37 @@ export default function Search() {
 
   return (
     <>
-      <button onClick={() => handleCategoryClick(1)}>Bakery</button>
-      <button onClick={() => handleCategoryClick(2)}>Restaurant</button>
-      <button onClick={() => handleCategoryClick(3)}>Supermarket</button>
-
+      <div className="flex justify-around">
+        <button
+          onClick={() => handleCategoryClick(1)}
+          className="bg-[#EFEEDE] py-8 px-5 rounded-md flex flex-col items-center w-24 h-24"
+        >
+          <img src="bakery.png" alt="bakery" className="h-8 w-8" />
+          <span className="mt-2">Bakery</span>
+        </button>
+        <button
+          onClick={() => handleCategoryClick(2)}
+          className="bg-[#EFEEDE] py-8 px-5 rounded-md flex flex-col items-center w-24 h-24"
+        >
+          <img src="restaurant.png" alt="restaurant" className="h-8 w-8" />
+          <span className="mt-2">Restaurant</span>
+        </button>
+        <button
+          onClick={() => handleCategoryClick(3)}
+          className="bg-[#EFEEDE] py-8 px-5 rounded-md flex flex-col items-center w-24 h-24"
+        >
+          <img src="supermarket.png" alt="supermarket" className="h-8 w-8" />
+          <span className="mt-2">Supermarket</span>
+        </button>
+      </div>
       {sellers?.data?.map((seller) => (
         <div key={seller.id}>
-          <li>{seller.name}</li>
-          <img src={seller.photo} alt={seller.name} />
+          <p>{seller.name}</p>
           <ul>
             {seller.baskets?.map((basket) => (
               <div
                 key={basket.id}
-                className="flex items-center p-4 bg-white shadow rounded mb-4"
+                className="flex items-start p-4 bg-white shadow rounded mb-4"
               >
                 <Link to={`/search/basket/${basket.id}`}>
                   <img
@@ -48,10 +66,20 @@ export default function Search() {
                     className="w-20 h-20 object-cover mr-4"
                   />
                 </Link>
-                <div>
-                  <h2 className="font-bold text-lg">{basket.title}</h2>
+                <div className="flex flex-col flex-grow">
+                  <p className="font-semi-bold text-lg text-left">
+                    {basket.title}
+                  </p>
                   <p className="text-gray-500">{basket.price}</p>
-                  <p className="text-gray-500">{basket.stock} left</p>
+                  <div className="flex justify-between">
+                    <p className="text-gray-500">{basket.stock} left</p>
+                    <div>
+                      <p className="text-gray-500 line-through">
+                        ${basket.originalPrice}
+                      </p>
+                      <p className="text-gray-500">${basket.discountedPrice}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

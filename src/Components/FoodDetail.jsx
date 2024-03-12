@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 export default function FoodDetail({ userId }) {
   const params = useParams();
@@ -9,16 +9,16 @@ export default function FoodDetail({ userId }) {
   const navigate = useNavigate();
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  //get the basket info
-  const basket = useQuery({
-    queryKey: ["basket", `${BASE_URL}/category/${params.basketId}`],
-    queryFn: () => fetcher(`${BASE_URL}/category/${params.basketId}`),
-    refetchInterval: 10000,
-  });
-  console.log(basket.data);
+  const baskets = useQuery(
+    ["basket", `${BASE_URL}/category/${params.basketId}`],
+    () => fetcher(`${BASE_URL}/category/${params.basketId}`),
+    { refetchInterval: 10000 }
+  );
+  console.log("baskets", baskets, baskets.data);
 
-  //add a basket to cart
-  //how about the edge case where the user goes back and wants to add the same item to basket through fooddetail?
+  // add a basket to cart
+  // how about the edge case where the user goes back and wants to add the same item to the basket through food detail?
+
   const postRequest = async (url, data) => await axios.post(url, data);
   const { mutate } = useMutation({
     mutationFn: (formData) => postRequest(`${BASE_URL}/cart`, formData),
@@ -46,7 +46,24 @@ export default function FoodDetail({ userId }) {
 
   return (
     <>
-      <button onClick={handleAddToCart}>Reserve</button>
+      <Link to="/search" className="absolute top-0 left-0 p-4">
+        &larr; Back
+      </Link>
+      {baskets.data?.map((basket) => (
+        <div key={basket.id} className="bg-white p-4 shadow rounded mb-4">
+          <img src={basket.photo} alt={basket.title} />
+          <p>{basket.title}</p>
+          <p>Pick-up start time: {basket.pickupStartTime}</p>
+          <p>Pick-up end time: {basket.pickupEndTime}</p>
+          <p>$ {basket.originalPrice}</p>
+          <p>$ {basket.discountedPrice}</p>
+          <p>{basket.description}</p>
+          <p>{basket.allergens}</p>
+          <p>{basket.stock} left</p>
+          <p>{basket.weightPerUnit} weight per unit</p>
+          <button onClick={handleAddToCart}>Reserve</button>
+        </div>
+      ))}
     </>
   );
 }
