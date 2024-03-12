@@ -89,7 +89,7 @@ function App() {
       path: "/order",
       element: (
         <ProtectedRoute>
-          <OrderPlaced />
+          <OrderPlaced userId={userId} />
           <NavBar />
         </ProtectedRoute>
       ),
@@ -98,7 +98,7 @@ function App() {
       path: "/profile",
       element: (
         <ProtectedRoute>
-          <Profile />
+          <Profile userId={userId} />
           <NavBar />
         </ProtectedRoute>
       ),

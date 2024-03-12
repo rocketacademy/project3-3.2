@@ -20,24 +20,25 @@ export default function FoodDetail({ userId }) {
   // how about the edge case where the user goes back and wants to add the same item to the basket through food detail?
 
   const postRequest = async (url, data) => await axios.post(url, data);
-  const { mutate } = useMutation(
-    (formData) => postRequest(`${BASE_URL}/cart`, formData),
-    {
-      onSuccess: (res) => {
-        queryClient.invalidateQueries(["cart", `${BASE_URL}/cart`]);
-        queryClient.setQueryData(
-          ["cart", `${BASE_URL}/cart${res.data.buyer_id}`],
-          res.data
-        );
-        navigate(`/cart`);
-      },
-    }
-  );
+  const { mutate } = useMutation({
+    mutationFn: (formData) => postRequest(`${BASE_URL}/cart`, formData),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: ["cart", `${BASE_URL}/cart`],
+      });
+      queryClient.setQueryData(
+        ["cartItems", `${BASE_URL}/cart/${res.data.buyer_id}`],
+        res.data
+      );
+      navigate(`/cart`);
+    },
+  });
 
   const handleAddToCart = () => {
+    console.log(params.basketId);
     const formData = {
-      buyer_id: userId,
-      basket_id: params.basketId,
+      buyerId: userId,
+      basketId: Number(params.basketId),
       stock: 1,
     };
     mutate(formData);
