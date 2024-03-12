@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -24,6 +24,28 @@ export default function Search() {
   };
 
   console.log(sellers.data);
+
+  // //get the user's location
+  // const [location, setLocation] = useState(null);
+
+  // useEffect(()=>{
+  //   const getLocation=()=>{
+  //     if (navigator.geolocation){
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position)=>{
+  //           const userLocation = {
+  //             type: "Point",
+  //             coordinates: [
+  //               position.coords.longitude,
+  //               position.coords.latitude,
+  //             ],
+  //           };
+  //           setLocation(userLocation);
+  //         }
+  //       )
+  //     }
+  //   }
+  // })
 
   return (
     <>

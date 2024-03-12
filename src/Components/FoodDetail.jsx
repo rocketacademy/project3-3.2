@@ -9,11 +9,10 @@ export default function FoodDetail({ userId }) {
   const navigate = useNavigate();
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  const baskets = useQuery(
-    ["basket", `${BASE_URL}/category/${params.basketId}`],
-    () => fetcher(`${BASE_URL}/category/${params.basketId}`),
-    { refetchInterval: 10000 }
-  );
+  const baskets = useQuery({
+    queryKey: ["basket", `${BASE_URL}/category/${params.basketId}`],
+    queryFn: () => fetcher(`${BASE_URL}/category/${params.basketId}`),
+  });
   console.log("baskets", baskets, baskets.data);
 
   // add a basket to cart
