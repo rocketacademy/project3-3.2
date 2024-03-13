@@ -1,25 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Cart({ userId }) {
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  //retrieve all items in cart
+  // retrieve item in cart
   const cartItems = useQuery({
     queryKey: ["cartItems"],
     queryFn: () => fetcher(`${BASE_URL}/cart/${userId}`),
   });
   console.log(cartItems.data);
 
-  //calculating price
+  // calculate price
   const totalPrice =
     cartItems?.data?.reduce((total, item) => {
       return total + item.basket.discountedPrice * item.stock;
     }, 0) || 0;
   console.log(totalPrice);
 
-  //post request for stripe payment
+  // post request for stripe payment
   const postRequest = async (url, data) => await axios.post(url, data);
   const { mutate: pay } = useMutation({
     mutationFn: () =>
@@ -32,12 +33,38 @@ export default function Cart({ userId }) {
 
   return (
     <>
+      <Link
+        to="/search"
+        className="absolute top-0 left-0 p-4 text-[#F59F50] font-medium"
+      >
+        &larr; Back
+      </Link>
+      {/* title */}
+      <div className="text-2xl flex justify-center">
+        <div>
+          <p className="text-[#E55555] font-bold">Food</p>
+        </div>
+        <div>
+          <p className="text-[#9EB97D] italic">Cart</p>
+        </div>
+      </div>
+      <br />
       {cartItems.data && cartItems.data.length > 0 ? (
-        <li>Total:${totalPrice}</li>
+        <>
+          <p>Your total would be: ${totalPrice}</p>
+          {/* map function */}
+          {/* <p>Item in your basket: ${cartItems.data.basket.title}</p> */}
+        </>
       ) : (
         <div>Your cart is empty</div>
       )}
-      <button onClick={() => pay()}>Checkout</button>
+      <br />
+      <button
+        className="bg-[#F59F50] text-white py-2 px-4 rounded-full"
+        onClick={() => pay()}
+      >
+        Checkout
+      </button>
     </>
   );
 }
