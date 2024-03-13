@@ -12,7 +12,7 @@ export default function Favorites() {
       {/* title */}
       <div className="text-2xl flex justify-center">
         <div>
-          <p className="text-[#E55555] font-bold">Your</p>
+          <p className="text-[#E55555] font-bold">Food</p>
         </div>
         <div>
           <p className="text-[#9EB97D] italic">Favorites</p>

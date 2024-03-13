@@ -6,21 +6,21 @@ import { Link } from "react-router-dom";
 export default function Cart({ userId }) {
   const fetcher = async (url) => (await axios.get(url)).data;
 
-  //retrieve all items in cart
+  // retrieve item in cart
   const cartItems = useQuery({
     queryKey: ["cartItems"],
     queryFn: () => fetcher(`${BASE_URL}/cart/${userId}`),
   });
   console.log(cartItems.data);
 
-  //calculating price
+  // calculate price
   const totalPrice =
     cartItems?.data?.reduce((total, item) => {
       return total + item.basket.discountedPrice * item.stock;
     }, 0) || 0;
   console.log(totalPrice);
 
-  //post request for stripe payment
+  // post request for stripe payment
   const postRequest = async (url, data) => await axios.post(url, data);
   const { mutate: pay } = useMutation({
     mutationFn: () =>
@@ -34,11 +34,21 @@ export default function Cart({ userId }) {
   return (
     <>
       <Link
-        to="/"
+        to="/search"
         className="absolute top-0 left-0 p-4 text-[#F59F50] font-medium"
       >
         &larr; Back
       </Link>
+      {/* title */}
+      <div className="text-2xl flex justify-center">
+        <div>
+          <p className="text-[#E55555] font-bold">Food</p>
+        </div>
+        <div>
+          <p className="text-[#9EB97D] italic">Cart</p>
+        </div>
+      </div>
+      <br />
       {cartItems.data && cartItems.data.length > 0 ? (
         <>
           <p>Your total would be: ${totalPrice}</p>
