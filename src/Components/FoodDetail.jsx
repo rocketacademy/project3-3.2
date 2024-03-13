@@ -48,19 +48,36 @@ export default function FoodDetail({ userId }) {
       <Link to="/search" className="absolute top-0 left-0 p-4">
         &larr; Back
       </Link>
+      <br />
       {baskets.data?.map((basket) => (
-        <div key={basket.id} className="bg-white p-4 shadow rounded mb-4">
-          <img src={basket.photo} alt={basket.title} />
-          <p>{basket.title}</p>
-          <p>Pick-up start time: {basket.pickupStartTime}</p>
-          <p>Pick-up end time: {basket.pickupEndTime}</p>
-          <p>$ {basket.originalPrice}</p>
-          <p>$ {basket.discountedPrice}</p>
-          <p>{basket.description}</p>
-          <p>{basket.allergens}</p>
-          <p>{basket.stock} left</p>
-          <p>{basket.weightPerUnit} weight per unit</p>
-          <button onClick={handleAddToCart}>Reserve</button>
+        <div key={basket.id} className="bg-[#EFEEDE] p-4 shadow rounded mb-4">
+          <img
+            src={basket.photo}
+            alt={basket.title}
+            className="object-cover h-48 w-96"
+          />
+          <div className="text-left">
+            <p className="text-xl font-semibold">{basket.title}</p>
+            <div className="font-light">
+              <p>Pick-up start time: {basket.pickupStartTime}</p>
+              <p>Pick-up end time: {basket.pickupEndTime}</p>
+            </div>
+            <p className="line-through">${basket.originalPrice}</p>
+            <p>${basket.discountedPrice}</p>
+            <p className="font-semibold">Product Description</p>
+            <p>{basket.description}.</p>
+            <p className="font-semibold">Allergies</p>
+            <p>{basket.allergens}</p>
+            <p>{basket.stock} left</p>
+            <p>{basket.weightPerUnit} weight per unit</p>
+          </div>
+
+          <button
+            className="bg-[#F59F50] text-white py-2 px-4 rounded-full"
+            onClick={handleAddToCart}
+          >
+            Reserve
+          </button>
         </div>
       ))}
     </>

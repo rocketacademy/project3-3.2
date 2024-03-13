@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function Search() {
   const [selectedCategoryId, setSelectedCategoryId] = useState(1);
+  const [distance, setDistance] = useState(10);
 
   const fetcher = async (url) => (await axios.get(url)).data;
 
@@ -72,9 +73,32 @@ export default function Search() {
           <span className="mt-2">Supermarket</span>
         </button>
       </div>
+      {/* range slider component with daisyUI for filtering distance */}
+      {/* Range slider */}
+      <div className="flex items-center py-4">
+        <label htmlFor="distance" className="mr-2">
+          Distance:
+        </label>
+        <input
+          type="range"
+          min="1"
+          max="100"
+          value={distance}
+          onChange={(e) => setDistance(parseInt(e.target.value))}
+          className="w-64"
+        />
+        <span className="ml-2">{distance} km</span>
+      </div>
       {sellers?.data?.map((seller) => (
         <div key={seller.id}>
-          <p>{seller.name}</p>
+          <div className="flex items-center p-2">
+            <img
+              src={seller.photo}
+              alt="Seller Photo"
+              className="w-16 h-16 rounded-full object-cover mr-4"
+            />
+            <p>{seller.name}</p>
+          </div>
           <ul>
             {seller.baskets?.map((basket) => (
               <div

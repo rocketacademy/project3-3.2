@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const fetcher = async (url) => (await axios.get(url)).data;
@@ -13,17 +14,19 @@ export default function Home() {
   });
   console.log("feeds", feeds, feeds.data);
 
-  const [comment, setComment] = useState("");
+  // retrieve seller logo and name
 
+  // like function
   const handleLike = (userId) => {
     // implement like functionality here
-    console.log(`${userId}: Liked`);
+    console.log(`${userId}: liked`);
   };
 
+  // comment function
+  const [comment, setComment] = useState("");
   const handleComment = (userId) => {
     // implement comment functionality here
-    console.log(`${userId}: Commented`);
-    console.log(`Comment: ${comment}`);
+    console.log(`${userId}: ${comment}`);
     setComment("");
   };
 
@@ -33,6 +36,7 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* title */}
       <div className="text-4xl flex justify-center">
         <div>
           <p className="text-[#E55555] font-bold">Food</p>
@@ -41,26 +45,30 @@ export default function Home() {
           <p className="text-[#9EB97D] italic">Rescue</p>
         </div>
       </div>
-      <div>
-        {/* new page to favorites */}
+      {/* favorites */}
+      <Link to={`/favorites`}>
         <button className="fixed top-8 right-8 p-2">
-          <img src="favorite.png" alt="favorite" className="h-8 w-8" />
+          <img src="favorites.png" alt="favorites" className="h-8 w-8" />
         </button>
-      </div>
+      </Link>
       {feeds?.data?.map((feed) => (
         <div
           key={feed.id}
           className="bg-[#EFEEDE] rounded-lg shadow p-4 relative"
         >
-          <img src={feed.photo} alt="Feed Photo" className="w-full mb-4" />
-          <p className="text-s mb-2 text-left">{feed.content}</p>
-          <p className="text-gray-500 text-sm text-left">{feed.createdAt}</p>
-          <br />
+          {/* render seller photo and name */}
+          <img src={feed.photo} alt="feed" className="w-full mb-4" />
+          <p className="text-s font-light text-left mb-2">{feed.content}</p>
+          <p className="text-gray-500 text-xs font-light text-left mb-2">
+            {feed.createdAt}
+          </p>
           <div className="flex justify-start">
+            {/* render likes */}
             <button onClick={() => handleLike(feed.id)}>
               <img src="like.png" alt="like" className="h-10 w-10" />
             </button>
           </div>
+          {/* render comment */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
