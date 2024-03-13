@@ -25,27 +25,22 @@ export default function Search() {
 
   console.log(sellers.data);
 
-  // //get the user's location
-  // const [location, setLocation] = useState(null);
+  //get the user's location
 
-  // useEffect(()=>{
-  //   const getLocation=()=>{
-  //     if (navigator.geolocation){
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position)=>{
-  //           const userLocation = {
-  //             type: "Point",
-  //             coordinates: [
-  //               position.coords.longitude,
-  //               position.coords.latitude,
-  //             ],
-  //           };
-  //           setLocation(userLocation);
-  //         }
-  //       )
-  //     }
-  //   }
-  // })
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const userLocation = {
+            type: "Point",
+            coordinates: [position.coords.longitude, position.coords.latitude],
+          };
+          console.log(userLocation);
+        });
+      }
+    };
+    getLocation();
+  }, []);
 
   return (
     <>
