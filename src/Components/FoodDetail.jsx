@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "./Constant";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { formatDate } from "./dateUtils";
 
 export default function FoodDetail({ userId }) {
   const params = useParams();
@@ -45,22 +46,57 @@ export default function FoodDetail({ userId }) {
 
   return (
     <>
-      <Link to="/search" className="absolute top-0 left-0 p-4">
+      <Link
+        to="/search"
+        className="absolute top-0 left-0 p-4 text-[#F59F50] font-medium"
+      >
         &larr; Back
       </Link>
+      {/* title */}
+      <div className="text-2xl flex justify-center">
+        <div>
+          <p className="text-[#E55555] font-bold">Food</p>
+        </div>
+        <div>
+          <p className="text-[#9EB97D] italic">Detail</p>
+        </div>
+      </div>
+      <br />
+      {/* food detail */}
       {baskets.data?.map((basket) => (
-        <div key={basket.id} className="bg-white p-4 shadow rounded mb-4">
-          <img src={basket.photo} alt={basket.title} />
-          <p>{basket.title}</p>
-          <p>Pick-up start time: {basket.pickupStartTime}</p>
-          <p>Pick-up end time: {basket.pickupEndTime}</p>
-          <p>$ {basket.originalPrice}</p>
-          <p>$ {basket.discountedPrice}</p>
-          <p>{basket.description}</p>
-          <p>{basket.allergens}</p>
-          <p>{basket.stock} left</p>
-          <p>{basket.weightPerUnit} weight per unit</p>
-          <button onClick={handleAddToCart}>Reserve</button>
+        <div key={basket.id} className="bg-[#EFEEDE] p-4 shadow rounded mb-4">
+          <img
+            src={basket.photo}
+            alt={basket.title}
+            className="object-cover h-48 w-96"
+          />
+          <div className="text-left">
+            <p className="text-lg font-semibold my-2">{basket.title}</p>
+            <div className="text-xs font-light my-1">
+              <p>Pick-up start time: {formatDate(basket.pickupStartTime)}</p>
+              <p>Pick-up end time: {formatDate(basket.pickupEndTime)}</p>
+            </div>
+            <div className="text-sm my-2">
+              <p>Original price:</p>
+              <p className="line-through">${basket.originalPrice}</p>
+              <p>Discounted price:</p>
+              <p>${basket.discountedPrice}</p>
+            </div>
+            <p className="font-semibold my-1">Product Description</p>
+            <p className="text-sm">{basket.description}.</p>
+            <p className="font-semibold my-1">Allergies</p>
+            <p className="text-sm">{basket.allergens}</p>
+            <p className="font-semibold my-1">Stock Available</p>
+            <p className="text-sm">{basket.stock} left</p>
+            <p className="font-semibold my-1">Weight per unit</p>
+            <p className="text-sm">{basket.weightPerUnit}</p>
+          </div>
+          <button
+            className="bg-[#F59F50] text-white py-2 px-4 rounded-full"
+            onClick={handleAddToCart}
+          >
+            Reserve
+          </button>
         </div>
       ))}
     </>
