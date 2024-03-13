@@ -33,7 +33,10 @@ export default function Cart({ userId }) {
 
   return (
     <>
-      <Link to="/search" className="absolute top-0 left-0 p-4">
+      <Link
+        to="/"
+        className="absolute top-0 left-0 p-4 text-[#F59F50] font-medium"
+      >
         &larr; Back
       </Link>
       {cartItems.data && cartItems.data.length > 0 ? (

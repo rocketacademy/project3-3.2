@@ -82,7 +82,7 @@ export default function Search() {
         <input
           type="range"
           min="1"
-          max="100"
+          max="20"
           value={distance}
           onChange={(e) => setDistance(parseInt(e.target.value))}
           className="w-64"
